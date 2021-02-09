@@ -1,0 +1,65 @@
+body {
+    background-color: rgb(242, 255, 252);
+    /* background-image: url("logo.png"), url("logo.png"); */
+    /* background-repeat: repeat-y, repeat-y; */
+    background-position: top left, top right;
+    margin: auto;
+    background-attachment: fixed;
+    background-size: 100px 118px;
+}
+
+h1 {
+    text-align: center;
+    font-family: Lucidatypewriter, monospace;
+    font-size: 50px;
+}
+
+form {
+    text-align: center;
+}
+
+table {
+    width: 100%;
+}
+
+tr:hover {
+    background-color: rgb(242, 255, 252);
+}
+
+th {
+  background-color: rgb(242, 255, 252);
+}
+
+.screenbox {
+    border: black 0.5px solid;
+    background-color: rgb(173, 235, 255);
+    margin: auto;
+    height: 80vh;
+    width: 50%;
+}
+
+.box {
+  border: black 2px solid;
+  background-color: rgb(173, 235, 255);
+  margin: auto;
+  width: 50%;
+  text-align: center;
+}
+
+.centrecontent {
+   position:relative;
+   top:30%;
+}
+
+.centreButton {
+    width:40%;
+    white-space: normal;
+}
+
+.textbox {
+    border: black 0.5px solid;
+    background-color: rgb(173, 235, 255);
+    margin: auto;
+    width: 60%;
+    text-align: center;
+}
