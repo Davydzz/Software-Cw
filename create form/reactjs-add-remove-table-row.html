@@ -1,5 +1,5 @@
 <html ng-app="helloApp" class="ng-scope"><head><style type="text/css">@charset "UTF-8";[ng\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide{display:none !important;}ng\:form{display:block;}.ng-animate-block-transitions{transition:0s all!important;-webkit-transition:0s all!important;}.ng-hide-add-active,.ng-hide-remove{display:block!important;}</style>
-    <title>Hello ReactJS - Add or Remove A Table Row - Code Example</title>
+    <title>Add Questions to Form</title>
     <link rel="stylesheet" href="bootstrap.min.css">
     <script async="" src="//www.google-analytics.com/analytics.js"></script><script src="angular.min.js"></script>
     <script src="assets/js/ui-bootstrap-tpls-0.9.0.min.js"></script>
@@ -10,27 +10,28 @@
     <script>
 	var helloApp = angular.module("helloApp", [ 'ui.bootstrap' ]);
 	</script>
+
   <script>
       /** @jsx React.DOM */
-      var CompanyApp = React.createClass({displayName: 'CompanyApp',
+      var QuestionApp = React.createClass({displayName: 'QuestionApp',
         getInitialState: function() {
-          return {companylist:this.props.companies};
+          return {questionlist:this.props.questions};
         },
-        handleNewRowSubmit: function( newcompany ) {
-          this.setState( {companylist: this.state.companylist.concat([newcompany])} );
+        handleNewRowSubmit: function( newquestion ) {
+          this.setState( {questionlist: this.state.questionlist.concat([newquestion])} );
         },
-        handleCompanyRemove: function( company ) {
+        handleQuestionRemove: function( question ) {
 
           var index = -1;
-          var clength = this.state.companylist.length;
+          var clength = this.state.questionlist.length;
       		for( var i = 0; i < clength; i++ ) {
-      			if( this.state.companylist[i].cname === company.cname ) {
+      			if( this.state.questionlist[i].cname === question.cname ) {
       				index = i;
       				break;
       			}
       		}
-      		this.state.companylist.splice( index, 1 );
-      		this.setState( {companylist: this.state.companylist} );
+      		this.state.questionlist.splice( index, 1 );
+      		this.setState( {questionlist: this.state.questionlist} );
         },
         render: function() {
           var tableStyle = {width: '100%'};
@@ -40,7 +41,7 @@
             React.DOM.table({style: tableStyle},
               React.DOM.tr(null,
                 React.DOM.td({style: leftTdStyle},
-                  CompanyList({clist: this.state.companylist, onCompanyRemove: this.handleCompanyRemove})
+                  QuestionList({clist: this.state.questionlist, onQuestionRemove: this.handleQuestionRemove})
                 ),
                 React.DOM.td({style: rightTdStyle},
                   NewRow({onRowSubmit: this.handleNewRowSubmit})
@@ -51,40 +52,39 @@
         }
       });
 
-      var CompanyList = React.createClass({displayName: 'CompanyList',
-        handleCompanyRemove: function(company){
-          this.props.onCompanyRemove( company );
+      var QuestionList = React.createClass({displayName: 'QuestionList',
+        handleQuestionRemove: function(question){
+          this.props.onQuestionRemove( question );
         },
         render: function() {
-          var companies = [];
-          var that = this; // TODO: Needs to find out why that = this made it work; Was getting error that onCompanyDelete is not undefined
-          this.props.clist.forEach(function(company) {
-            companies.push(Company({company: company, onCompanyDelete: that.handleCompanyRemove}) );
+          var questions = [];
+          var that = this;
+          this.props.clist.forEach(function(question) {
+            questions.push(Question({question: question, onQuestionDelete: that.handleQuestionRemove}) );
           });
           return (
             React.DOM.div(null,
-              React.DOM.h3(null, "List of Companies"),
+              React.DOM.h3(null, "List of Questions"),
               React.DOM.table({className: "table table-striped"},
-                React.DOM.thead(null, React.DOM.tr(null, React.DOM.th(null, "Company Name"), React.DOM.th(null, "Employees"), React.DOM.th(null, "Head Office"), React.DOM.th(null, "Action"))),
-                React.DOM.tbody(null, companies)
+                React.DOM.thead(null, React.DOM.tr(null, React.DOM.th(null, "Question"), React.DOM.th(null, "Question Type"), React.DOM.th(null, "Action"))),
+                React.DOM.tbody(null, questions)
               )
             )
             );
         }
       });
 
-      var Company = React.createClass({displayName: 'Company',
-        handleRemoveCompany: function() {
-          this.props.onCompanyDelete( this.props.company );
+      var Question = React.createClass({displayName: 'Question',
+        handleRemoveQuestion: function() {
+          this.props.onQuestionDelete( this.props.question );
           return false;
         },
         render: function() {
           return (
             React.DOM.tr(null,
-              React.DOM.td(null, this.props.company.cname),
-              React.DOM.td(null, this.props.company.ecount),
-              React.DOM.td(null, this.props.company.hoffice),
-              React.DOM.td(null, React.DOM.input({type: "button", className: "btn btn-primary", value: "Remove", onClick: this.handleRemoveCompany}))
+              React.DOM.td(null, this.props.question.cname),
+              React.DOM.td(null, this.props.question.ecount),
+              React.DOM.td(null, React.DOM.input({type: "button", className: "btn btn-primary", value: "Remove", onClick: this.handleRemoveQuestion}))
             )
             );
         }
@@ -107,158 +107,60 @@
           var inputStyle = {padding:'12px'}
           return (
             React.DOM.div({className: "well"},
-              React.DOM.h3(null, "Add A Company"),
+              React.DOM.h3(null, "Add A Question"),
             React.DOM.form({onSubmit: this.handleSubmit},
               React.DOM.div({className: "input-group input-group-lg", style: inputStyle},
-                React.DOM.input({type: "text", className: "form-control col-md-8", placeholder: "Company Name", ref: "cname"})
+                React.DOM.input({type: "text", className: "form-control col-md-8", placeholder: "Question", ref: "cname"})
               ),
               React.DOM.div({className: "input-group input-group-lg", style: inputStyle},
-                React.DOM.input({type: "text", className: "form-control col-md-8", placeholder: "Employee Count", ref: "ecount"})
+                React.DOM.input({type: "text", className: "form-control col-md-8", placeholder: "Question Type", ref: "ecount"})
               ),
               React.DOM.div({className: "input-group input-group-lg", style: inputStyle},
-                React.DOM.input({type: "text", className: "form-control col-md-8", placeholder: "Headoffice", ref: "hoffice"})
-              ),
-              React.DOM.div({className: "input-group input-group-lg", style: inputStyle},
-                React.DOM.input({type: "submit", className: "btn btn-primary", value: "Add Company"})
+                React.DOM.input({type: "submit", className: "btn btn-primary", value: "Add Question"})
               )
             )
             )
             );
         }
       });
-      var defCompanies = [{cname:"Infosys Technologies",ecount:150000,hoffice:"Bangalore"},{cname:"TCS",ecount:140000,hoffice:"Mumbai"}];
-      React.renderComponent( CompanyApp({companies: defCompanies}), document.getElementById( "companyApp" ) );
+      var defQuestions = [{cname:"Infosys Technologies",ecount:150000},{cname:"TCS",ecount:140000}];
+      React.renderComponent( QuestionApp({questions: defQuestions}), document.getElementById( "questionApp" ) );
 
 //# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoidHJhbnNmb3JtZWQuanMiLCJzb3VyY2VzIjpbIklubGluZSBKU1ggc2NyaXB0Il0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO01BQ00scUJBQXFCO01BQ3JCLElBQUksZ0NBQWdDLDBCQUFBO1FBQ2xDLGVBQWUsRUFBRSxXQUFXO1VBQzFCLE9BQU8sQ0FBQyxXQUFXLENBQUMsSUFBSSxDQUFDLEtBQUssQ0FBQyxTQUFTLENBQUMsQ0FBQztTQUMzQztRQUNELGtCQUFrQixFQUFFLFVBQVUsVUFBVSxHQUFHO1VBQ3pDLElBQUksQ0FBQyxRQUFRLEVBQUUsQ0FBQyxXQUFXLEVBQUUsSUFBSSxDQUFDLEtBQUssQ0FBQyxXQUFXLENBQUMsTUFBTSxDQUFDLENBQUMsVUFBVSxDQUFDLENBQUMsQ0FBQyxFQUFFLENBQUM7U0FDN0U7QUFDVCxRQUFRLG1CQUFtQixFQUFFLFVBQVUsT0FBTyxHQUFHOztVQUV2QyxJQUFJLEtBQUssR0FBRyxDQUFDLENBQUMsQ0FBQztVQUNmLElBQUksT0FBTyxHQUFHLElBQUksQ0FBQyxLQUFLLENBQUMsV0FBVyxDQUFDLE1BQU0sQ0FBQztRQUM5QyxLQUFLLElBQUksQ0FBQyxHQUFHLENBQUMsRUFBRSxDQUFDLEdBQUcsT0FBTyxFQUFFLENBQUMsRUFBRSxHQUFHO1NBQ2xDLElBQUksSUFBSSxDQUFDLEtBQUssQ0FBQyxXQUFXLENBQUMsQ0FBQyxDQUFDLENBQUMsS0FBSyxLQUFLLE9BQU8sQ0FBQyxLQUFLLEdBQUc7VUFDdkQsS0FBSyxHQUFHLENBQUMsQ0FBQztVQUNWLE1BQU07VUFDTjtTQUNEO1FBQ0QsSUFBSSxDQUFDLEtBQUssQ0FBQyxXQUFXLENBQUMsTUFBTSxFQUFFLEtBQUssRUFBRSxDQUFDLEVBQUUsQ0FBQztRQUMxQyxJQUFJLENBQUMsUUFBUSxFQUFFLENBQUMsV0FBVyxFQUFFLElBQUksQ0FBQyxLQUFLLENBQUMsV0FBVyxDQUFDLEVBQUUsQ0FBQztTQUN0RDtRQUNELE1BQU0sRUFBRSxXQUFXO1VBQ2pCLElBQUks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QUFDLEtBQUEsRUFBSyxDQUFFLFVBQVksQ0FBQSxFQUFBO2dCQUM3RCxlQUFNLENBQUEsQ0FBQSxDQUFDLElBQUEsRUFBSSxDQUFDLE1BQUEsRUFBTSxFQUFFLFNBQUEsRUFBUyxDQUFDLHVCQUFBLEVBQXVCLENBQUMsV0FBQSxFQUFXLENBQUMsWUFBQSxFQUFZLENBQUMsR0FBQSxFQUFHLENBQUMsU0FBUyxDQUFFLENBQUE7Y0FDMUYsQ0FBQSxFQUFBO2NBQ04sYUFBSSxDQUFBLENBQUEsQ0FBQyxTQUFBLEVBQVMsQ0FBQyw0QkFBQSxFQUE0QixDQUFDLEtBQUEsRUFBSyxDQUFFLFVBQVksQ0FBQSxFQUFBO2dCQUM3RCxlQUFNLENBQUEsQ0FBQSxDQUFDLElBQUEsRUFBSSxDQUFDLFFBQUEsRUFBUSxFQUFFLFNBQUEsRUFBUyxDQUFDLGlCQUFBLEVBQWlCLENBQUMsS0FBQSxFQUFLLENBQUMsYUFBYSxDQUFFLENBQUE7Y0FDbkUsQ0FBQTtZQUNELENBQUE7WUFDRCxDQUFBO2NBQ0o7U0FDTDtPQUNGLENBQUMsQ0FBQztNQUNILElBQUksWUFBWSxHQUFHLENBQUMsQ0FBQyxLQUFLLENBQUMsc0JBQXNCLENBQUMsTUFBTSxDQUFDLE1BQU0sQ0FBQyxPQUFPLENBQUMsV0FBVyxDQUFDLENBQUMsQ0FBQyxLQUFLLENBQUMsS0FBSyxDQUFDLE1BQU0sQ0FBQyxNQUFNLENBQUMsT0FBTyxDQUFDLFFBQVEsQ0FBQyxDQUFDLENBQUM7TUFDbkksS0FBSyxDQUFDLGVBQWUsRUFBRyxVQUFVLENBQUEsQ0FBQSxDQUFDLFNBQUEsRUFBUyxDQUFFLFlBQWEsQ0FBRSxDQUFBLEVBQUUsUUFBUSxDQUFDLGNBQWMsRUFBRSxZQUFZLEVBQUUsRUFBRSxDQUFDIiwic291cmNlc0NvbnRlbnQiOlsiXG4gICAgICAvKiogQGpzeCBSZWFjdC5ET00gKi9cbiAgICAgIHZhciBDb21wYW55QXBwID0gUmVhY3QuY3JlYXRlQ2xhc3Moe1xuICAgICAgICBnZXRJbml0aWFsU3RhdGU6IGZ1bmN0aW9uKCkge1xuICAgICAgICAgIHJldHVybiB7Y29tcGFueWxpc3Q6dGhpcy5wcm9wcy5jb21wYW5pZXN9O1xuICAgICAgICB9LFxuICAgICAgICBoYW5kbGVOZXdSb3dTdWJtaXQ6IGZ1bmN0aW9uKCBuZXdjb21wYW55ICkge1xuICAgICAgICAgIHRoaXMuc2V0U3RhdGUoIHtjb21wYW55bGlzdDogdGhpcy5zdGF0ZS5jb21wYW55bGlzdC5jb25jYXQoW25ld2NvbXBhbnldKX0gKTtcbiAgICAgICAgfSxcbiAgICAgICAgaGFuZGxlQ29tcGFueVJlbW92ZTogZnVuY3Rpb24oIGNvbXBhbnkgKSB7XG4gICAgICAgICAgXG4gICAgICAgICAgdmFyIGluZGV4ID0gLTE7XHRcbiAgICAgICAgICB2YXIgY2xlbmd0aCA9IHRoaXMuc3RhdGUuY29tcGFueWxpc3QubGVuZ3RoO1xuICAgICAgXHRcdGZvciggdmFyIGkgPSAwOyBpIDwgY2xlbmd0aDsgaSsrICkge1xuICAgICAgXHRcdFx0aWYoIHRoaXMuc3RhdGUuY29tcGFueWxpc3RbaV0uY25hbWUgPT09IGNvbXBhbnkuY25hbWUgKSB7XG4gICAgICBcdFx0XHRcdGluZGV4ID0gaTtcbiAgICAgIFx0XHRcdFx0YnJlYWs7XG4gICAgICBcdFx0XHR9XG4gICAgICBcdFx0fVxuICAgICAgXHRcdHRoaXMuc3RhdGUuY29tcGFueWxpc3Quc3BsaWNlKCBpbmRleCwgMSApO1x0XG4gICAgICBcdFx0dGhpcy5zZXRTdGF0ZSgge2NvbXBhbnlsaXN0OiB0aGlzLnN0YXRlLmNvbXBhbnlsaXN0fSApO1xuICAgICAgICB9LFxuICAgICAgICByZW5kZXI6IGZ1bmN0aW9uKCkge1xuICAgICAgICAgIHZhciB0YWJsZVN0eWxlID0ge3dpZHRoOiAnMTAwJSd9O1xuICAgICAgICAgIHZhciBsZWZ0VGRTdHlsZSA9IHt3aWR0aDogJzUwJScscGFkZGluZzonMjBweCcsdmVydGljYWxBbGlnbjogJ3RvcCd9O1xuICAgICAgICAgIHZhciByaWdodFRkU3R5bGUgPSB7d2lkdGg6ICc1MCUnLHBhZGRpbmc6JzIwcHgnLHZlcnRpY2FsQWxpZ246ICd0b3AnfTtcbiAgICAgICAgICByZXR1cm4gKCBcbiAgICAgICAgICAgIDx0YWJsZSBzdHlsZT17dGFibGVTdHlsZX0+XG4gICAgICAgICAgICAgIDx0cj5cbiAgICAgICAgICAgICAgICA8dGQgc3R5bGU9e2xlZnRUZFN0eWxlfT5cbiAgICAgICAgICAgICAgICAgIDxDb21wYW55TGlzdCBjbGlzdD17dGhpcy5zdGF0ZS5jb21wYW55bGlzdH0gIG9uQ29tcGFueVJlbW92ZT17dGhpcy5oYW5kbGVDb21wYW55UmVtb3ZlfS8+XG4gICAgICAgICAgICAgICAgPC90ZD5cbiAgICAgICAgICAgICAgICA8dGQgc3R5bGU9e3JpZ2h0VGRTdHlsZX0+XG4gICAgICAgICAgICAgICAgICA8TmV3Um93IG9uUm93U3VibWl0PXt0aGlzLmhhbmRsZU5ld1Jvd1N1Ym1pdH0vPlxuICAgICAgICAgICAgICAgIDwvdGQ+XG4gICAgICAgICAgICAgIDwvdHI+XG4gICAgICAgICAgPC90YWJsZT5cbiAgICAgICAgICApO1xuICAgICAgICB9XG4gICAgICB9KTtcbiAgICAgIFxuICAgICAgdmFyIENvbXBhbnlMaXN0ID0gUmVhY3QuY3JlYXRlQ2xhc3Moe1xuICAgICAgICBoYW5kbGVDb21wYW55UmVtb3ZlOiBmdW5jdGlvbihjb21wYW55KXtcbiAgICAgICAgICB0aGlzLnByb3BzLm9uQ29tcGFueVJlbW92ZSggY29tcGFueSApO1xuICAgICAgICB9LFxuICAgICAgICByZW5kZXI6IGZ1bmN0aW9uKCkge1xuICAgICAgICAgIHZhciBjb21wYW5pZXMgPSBbXTtcbiAgICAgICAgICB2YXIgdGhhdCA9IHRoaXM7IC8vIFRPRE86IE5lZWRzIHRvIGZpbmQgb3V0IHdoeSB0aGF0ID0gdGhpcyBtYWRlIGl0IHdvcms7IFdhcyBnZXR0aW5nIGVycm9yIHRoYXQgb25Db21wYW55RGVsZXRlIGlzIG5vdCB1bmRlZmluZWRcbiAgICAgICAgICB0aGlzLnByb3BzLmNsaXN0LmZvckVhY2goZnVuY3Rpb24oY29tcGFueSkge1xuICAgICAgICAgICAgY29tcGFuaWVzLnB1c2goPENvbXBhbnkgY29tcGFueT17Y29tcGFueX0gb25Db21wYW55RGVsZXRlPXt0aGF0LmhhbmRsZUNvbXBhbnlSZW1vdmV9IC8+ICk7XG4gICAgICAgICAgfSk7XG4gICAgICAgICAgcmV0dXJuICggXG4gICAgICAgICAgICA8ZGl2PlxuICAgICAgICAgICAgICA8aDM+TGlzdCBvZiBDb21wYW5pZXM8L2gzPlxuICAgICAgICAgICAgICA8dGFibGUgY2xhc3NOYW1lPVwidGFibGUgdGFibGUtc3RyaXBlZFwiPlxuICAgICAgICAgICAgICAgIDx0aGVhZD48dHI+PHRoPkNvbXBhbnkgTmFtZTwvdGg+PHRoPkVtcGxveWVlczwvdGg+PHRoPkhlYWQgT2ZmaWNlPC90aD48dGg+QWN0aW9uPC90aD48L3RyPjwvdGhlYWQ+XG4gICAgICAgICAgICAgICAgPHRib2R5Pntjb21wYW5pZXN9PC90Ym9keT5cbiAgICAgICAgICAgICAgPC90YWJsZT5cbiAgICAgICAgICAgIDwvZGl2PlxuICAgICAgICAgICAgKTtcbiAgICAgICAgfVxuICAgICAgfSk7XG4gICAgICBcbiAgICAgIHZhciBDb21wYW55ID0gUmVhY3QuY3JlYXRlQ2xhc3Moe1xuICAgICAgICBoYW5kbGVSZW1vdmVDb21wYW55OiBmdW5jdGlvbigpIHtcbiAgICAgICAgICB0aGlzLnByb3BzLm9uQ29tcGFueURlbGV0ZSggdGhpcy5wcm9wcy5jb21wYW55ICk7XG4gICAgICAgICAgcmV0dXJuIGZhbHNlO1xuICAgICAgICB9LFxuICAgICAgICByZW5kZXI6IGZ1bmN0aW9uKCkge1xuICAgICAgICAgIHJldHVybiAoXG4gICAgICAgICAgICA8dHI+XG4gICAgICAgICAgICAgIDx0ZD57dGhpcy5wcm9wcy5jb21wYW55LmNuYW1lfTwvdGQ+XG4gICAgICAgICAgICAgIDx0ZD57dGhpcy5wcm9wcy5jb21wYW55LmVjb3VudH08L3RkPlxuICAgICAgICAgICAgICA8dGQ+e3RoaXMucHJvcHMuY29tcGFueS5ob2ZmaWNlfTwvdGQ+XG4gICAgICAgICAgICAgIDx0ZD48aW5wdXQgdHlwZT1cImJ1dHRvblwiICBjbGFzc05hbWU9XCJidG4gYnRuLXByaW1hcnlcIiB2YWx1ZT1cIlJlbW92ZVwiIG9uQ2xpY2s9e3RoaXMuaGFuZGxlUmVtb3ZlQ29tcGFueX0vPjwvdGQ+XG4gICAgICAgICAgICA8L3RyPlxuICAgICAgICAgICAgKTtcbiAgICAgICAgfVxuICAgICAgfSk7XG4gICAgICBcbiAgICAgIHZhciBOZXdSb3cgPSBSZWFjdC5jcmVhdGVDbGFzcyh7XG4gICAgICAgIGhhbmRsZVN1Ym1pdDogZnVuY3Rpb24oKSB7XG4gICAgICAgICAgdmFyIGNuYW1lID0gdGhpcy5yZWZzLmNuYW1lLmdldERPTU5vZGUoKS52YWx1ZTtcbiAgICAgICAgICB2YXIgZWNvdW50ID0gdGhpcy5yZWZzLmVjb3VudC5nZXRET01Ob2RlKCkudmFsdWU7XG4gICAgICAgICAgdmFyIGhvZmZpY2UgPSB0aGlzLnJlZnMuaG9mZmljZS5nZXRET01Ob2RlKCkudmFsdWU7XG4gICAgICAgICAgdmFyIG5ld3JvdyA9IHtjbmFtZTogY25hbWUsIGVjb3VudDogZWNvdW50LCBob2ZmaWNlOiBob2ZmaWNlIH07XG4gICAgICAgICAgdGhpcy5wcm9wcy5vblJvd1N1Ym1pdCggbmV3cm93ICk7XG4gICAgICAgICAgXG4gICAgICAgICAgdGhpcy5yZWZzLmNuYW1lLmdldERPTU5vZGUoKS52YWx1ZSA9ICcnO1xuICAgICAgICAgIHRoaXMucmVmcy5lY291bnQuZ2V0RE9NTm9kZSgpLnZhbHVlID0gJyc7XG4gICAgICAgICAgdGhpcy5yZWZzLmhvZmZpY2UuZ2V0RE9NTm9kZSgpLnZhbHVlID0gJyc7XG4gICAgICAgICAgcmV0dXJuIGZhbHNlO1xuICAgICAgICB9LFxuICAgICAgICByZW5kZXI6IGZ1bmN0aW9uKCkge1xuICAgICAgICAgIHZhciBpbnB1dFN0eWxlID0ge3BhZGRpbmc6JzEycHgnfVxuICAgICAgICAgIHJldHVybiAoIFxuICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJ3ZWxsXCI+XG4gICAgICAgICAgICAgIDxoMz5BZGQgQSBDb21wYW55PC9oMz5cbiAgICAgICAgICAgIDxmb3JtIG9uU3VibWl0PXt0aGlzLmhhbmRsZVN1Ym1pdH0+XG4gICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPVwiaW5wdXQtZ3JvdXAgaW5wdXQtZ3JvdXAtbGdcIiBzdHlsZT17aW5wdXRTdHlsZX0+XG4gICAgICAgICAgICAgICAgPGlucHV0IHR5cGU9XCJ0ZXh0XCIgIGNsYXNzTmFtZT1cImZvcm0tY29udHJvbCBjb2wtbWQtOFwiICBwbGFjZWhvbGRlcj1cIkNvbXBhbnkgTmFtZVwiIHJlZj1cImNuYW1lXCIvPlxuICAgICAgICAgICAgICA8L2Rpdj5cbiAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJpbnB1dC1ncm91cCBpbnB1dC1ncm91cC1sZ1wiIHN0eWxlPXtpbnB1dFN0eWxlfT5cbiAgICAgICAgICAgICAgICA8aW5wdXQgdHlwZT1cInRleHRcIiAgY2xhc3NOYW1lPVwiZm9ybS1jb250cm9sIGNvbC1tZC04XCIgcGxhY2Vob2xkZXI9XCJFbXBsb3llZSBDb3VudFwiIHJlZj1cImVjb3VudFwiLz5cbiAgICAgICAgICAgICAgPC9kaXY+XG4gICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPVwiaW5wdXQtZ3JvdXAgaW5wdXQtZ3JvdXAtbGdcIiBzdHlsZT17aW5wdXRTdHlsZX0+XG4gICAgICAgICAgICAgICAgPGlucHV0IHR5cGU9XCJ0ZXh0XCIgIGNsYXNzTmFtZT1cImZvcm0tY29udHJvbCBjb2wtbWQtOFwiIHBsYWNlaG9sZGVyPVwiSGVhZG9mZmljZVwiIHJlZj1cImhvZmZpY2VcIi8+XG4gICAgICAgICAgICAgIDwvZGl2PlxuICAgICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT1cImlucHV0LWdyb3VwIGlucHV0LWdyb3VwLWxnXCIgc3R5bGU9e2lucHV0U3R5bGV9PlxuICAgICAgICAgICAgICAgIDxpbnB1dCB0eXBlPVwic3VibWl0XCIgIGNsYXNzTmFtZT1cImJ0biBidG4tcHJpbWFyeVwiIHZhbHVlPVwiQWRkIENvbXBhbnlcIi8+XG4gICAgICAgICAgICAgIDwvZGl2PlxuICAgICAgICAgICAgPC9mb3JtPlxuICAgICAgICAgICAgPC9kaXY+XG4gICAgICAgICAgICApO1xuICAgICAgICB9XG4gICAgICB9KTtcbiAgICAgIHZhciBkZWZDb21wYW5pZXMgPSBbe2NuYW1lOlwiSW5mb3N5cyBUZWNobm9sb2dpZXNcIixlY291bnQ6MTUwMDAwLGhvZmZpY2U6XCJCYW5nYWxvcmVcIn0se2NuYW1lOlwiVENTXCIsZWNvdW50OjE0MDAwMCxob2ZmaWNlOlwiTXVtYmFpXCJ9XTtcbiAgICAgIFJlYWN0LnJlbmRlckNvbXBvbmVudCggPENvbXBhbnlBcHAgY29tcGFuaWVzPXtkZWZDb21wYW5pZXN9Lz4sIGRvY3VtZW50LmdldEVsZW1lbnRCeUlkKCBcImNvbXBhbnlBcHBcIiApICk7XG4gICAgIl19</script></head>
-  <body>
-  	<header class="navbar navbar-static-top" id="top" role="banner">
-<div class="container">
-	<header class="navbar navbar-default navbar-fixed-top">
-		<div class="navbar-inner">
-			<div class="container">
-				<div class="navbar-header">
-					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-3" ng-click="isCollapsed = !isCollapsed">
-						<span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span>
-					</button>
-					<a class="navbar-brand visible-xs" href="#">UI Bootstrap</a>
-				</div>
-				<nav class="hidden-xs">
-					<ul class="nav navbar-nav">
-						<a href="/" role="button" class="navbar-brand"> Home </a>
-						<li class="dropdown"><a role="button" class="dropdown-toggle">
-								ReactJS<b class="caret"></b>
-						</a>
-							<ul class="dropdown-menu" role="menu">
-								<li><a href="/hello-world-reactjs">Hello World</a></li>
-								<li><a href="/reactjs-add-table-row">Add Table Row
-										Dynamically</a></li>
-								<li><a href="/reactjs-add-remove-table-row">Add/Remove
-										Table Row Dynamically</a></li>
-							</ul></li>
-						<li class="dropdown"><a role="button" class="dropdown-toggle">
-								AngularJS<b class="caret"></b>
-						</a>
-							<ul class="dropdown-menu">
-								<li><a href="http://hello-angularjs.appspot.com/helloworld" target="_blank" rel="nofollow">Hello World</a></li>
-								<li><a href="http://hello-angularjs.appspot.com/addtablerow" target="_blank" rel="nofollow">Add Table Row Dynamically</a></li>
-								<li><a href="http://hello-angularjs.appspot.com/removetablerow" target="_blank" rel="nofollow">Remove Table Row
-										Dynamically</a></li>
-								<li><a href="http://hello-angularjs.appspot.com/searchtable" target="_blank" rel="nofollow">Search Table</a></li>
-								<li><a href="http://hello-angularjs.appspot.com/sorttablecolumn" target="_blank" rel="nofollow">Sorting Table Columns</a></li>
-								<li><a href="http://hello-angularjs.appspot.com/spa" target="_blank" rel="nofollow">Routing &amp; Single Page Application
-										(SPA)</a></li>
-								<li><a href="http://hello-angularjs.appspot.com/angularjs-unit-test-code-example-1" target="_blank" rel="nofollow">Unit
-										Test Code Example 1</a></li>
-								<li><a href="http://hello-angularjs.appspot.com/angularjs-filters-examples" target="_blank" rel="nofollow">Filters
-										Examples</a></li>
-								<li><a href="http://hello-angularjs.appspot.com/angularjs-http-service-ajax-get-code-example" target="_blank" rel="nofollow">AJAX
-										GET &amp; Spring MVC Example</a></li>
-								<li><a href="http://hello-angularjs.appspot.com/angularjs-http-service-ajax-post-code-example" target="_blank" rel="nofollow">AJAX
-										POST &amp; Spring MVC Example</a></li>
-								<li><a href="http://hello-angularjs.appspot.com/angularjs-http-service-ajax-post-json-data-code-example" target="_blank" rel="nofollow">AJAX
-										POST JSON Data &amp; Spring MVC Example</a></li>
-								<li><a href="http://hello-angularjs.appspot.com/angularjs-restful-apis-get-method-code-example" target="_blank" rel="nofollow">Consuming
-										RESTful APIs with ngResource and Spring MVC</a></li>
-								<li><a href="http://hello-angularjs.appspot.com/angularjs-restful-apis-post-method-code-example" target="_blank" rel="nofollow">Post
-										with RESTful APIs, ngResource and Spring MVC</a></li>
-								<li><a href="http://hello-angularjs.appspot.com/angularjs-single-page-app-restful-apis" target="_blank" rel="nofollow">Single
-										Page App with RESTful APIs</a></li>
-								<li><a href="http://hello-angularjs.appspot.com/angularjs-create-custom-services" target="_blank" rel="nofollow">How to
-										Create Custom Service</a></li>
-								<li><a href="http://hello-angularjs.appspot.com/angularjs-how-create-custom-directives" target="_blank" rel="nofollow">How
-										to Create Custom Directives</a></li>
-							</ul></li>
 
-						<li class="dropdown"><a role="button" class="dropdown-toggle">
-								KnockoutJS<b class="caret"></b>
-						</a>
-							<ul class="dropdown-menu" role="menu">
-								<li><a href="/helloworld-knockoutjs">Hello World</a></li>
-							</ul></li>
-					</ul>
-				</nav>
-			</div>
-		</div>
-	</header>
-	<div class="header-placeholder"></div>
-</div></header>
+
+  <body>
     <div class="container">
       <div class="page-header">
-        <h1>ReactJS - Add/Remove a Table Row - Code Example</h1>
+        <h1>Add Questions to Form</h1>
       </div>
-      <div>
-      The demo represents the high level concepts around adding or removing a table row dynamically using ReactJS, a Javascript library for building UI.
+
+      <div id="questionApp"><table style="width:100%;" data-reactid=".0"><tbody><tr data-reactid=".0.0"><td style="width:50%;padding:20px;vertical-align:top;" data-reactid=".0.0.0"><div data-reactid=".0.0.0.0"><h3 data-reactid=".0.0.0.0.0">List of Questions</h3><table class="table table-striped" data-reactid=".0.0.0.0.1"><thead data-reactid=".0.0.0.0.1.0"><tr data-reactid=".0.0.0.0.1.0.0"><th data-reactid=".0.0.0.0.1.0.0.0">Question</th><th data-reactid=".0.0.0.0.1.0.0.1">Question Type</th><th data-reactid=".0.0.0.0.1.0.0.2">Head Office</th><th data-reactid=".0.0.0.0.1.0.0.3">Action</th></tr></thead><tbody data-reactid=".0.0.0.0.1.1"></tbody></table></div></td><td style="width:50%;padding:20px;vertical-align:top;" data-reactid=".0.0.1"><div class="well" data-reactid=".0.0.1.0"><h3 data-reactid=".0.0.1.0.0">Add A Question</h3><form data-reactid=".0.0.1.0.1"><div class="input-group input-group-lg" style="padding:12px;" data-reactid=".0.0.1.0.1.0"><input type="text" class="form-control col-md-8" placeholder="Question" data-reactid=".0.0.1.0.1.0.0"></div><div class="input-group input-group-lg" style="padding:12px;" data-reactid=".0.0.1.0.1.1"><input type="text" class="form-control col-md-8" placeholder="Question Type" data-reactid=".0.0.1.0.1.1.0"></div><div class="input-group input-group-lg" style="padding:12px;" data-reactid=".0.0.1.0.1.2"><input type="text" class="form-control col-md-8" placeholder="Headoffice" data-reactid=".0.0.1.0.1.2.0"></div><div class="input-group input-group-lg" style="padding:12px;" data-reactid=".0.0.1.0.1.3"><input type="submit" class="btn btn-primary" value="Add Question" data-reactid=".0.0.1.0.1.3.0"></div></form></div></td></tr></tbody></table></div>
       </div>
-      <div id="companyApp"><table style="width:100%;" data-reactid=".0"><tbody><tr data-reactid=".0.0"><td style="width:50%;padding:20px;vertical-align:top;" data-reactid=".0.0.0"><div data-reactid=".0.0.0.0"><h3 data-reactid=".0.0.0.0.0">List of Companies</h3><table class="table table-striped" data-reactid=".0.0.0.0.1"><thead data-reactid=".0.0.0.0.1.0"><tr data-reactid=".0.0.0.0.1.0.0"><th data-reactid=".0.0.0.0.1.0.0.0">Company Name</th><th data-reactid=".0.0.0.0.1.0.0.1">Employees</th><th data-reactid=".0.0.0.0.1.0.0.2">Head Office</th><th data-reactid=".0.0.0.0.1.0.0.3">Action</th></tr></thead><tbody data-reactid=".0.0.0.0.1.1"></tbody></table></div></td><td style="width:50%;padding:20px;vertical-align:top;" data-reactid=".0.0.1"><div class="well" data-reactid=".0.0.1.0"><h3 data-reactid=".0.0.1.0.0">Add A Company</h3><form data-reactid=".0.0.1.0.1"><div class="input-group input-group-lg" style="padding:12px;" data-reactid=".0.0.1.0.1.0"><input type="text" class="form-control col-md-8" placeholder="Company Name" data-reactid=".0.0.1.0.1.0.0"></div><div class="input-group input-group-lg" style="padding:12px;" data-reactid=".0.0.1.0.1.1"><input type="text" class="form-control col-md-8" placeholder="Employee Count" data-reactid=".0.0.1.0.1.1.0"></div><div class="input-group input-group-lg" style="padding:12px;" data-reactid=".0.0.1.0.1.2"><input type="text" class="form-control col-md-8" placeholder="Headoffice" data-reactid=".0.0.1.0.1.2.0"></div><div class="input-group input-group-lg" style="padding:12px;" data-reactid=".0.0.1.0.1.3"><input type="submit" class="btn btn-primary" value="Add Company" data-reactid=".0.0.1.0.1.3.0"></div></form></div></td></tr></tbody></table></div>
-      <div class="panel panel-primary">
-			<div class="panel-heading">
-				<h3 class="panel-title">Notes</h3>
-			</div>
-			<div class="panel-body">
-				<!-- Notes goes here -->
-				<ul>
-					<li>Following is demonstrated as part of this demo:
-						<ol>
-							<li>Composite Components</li>
-							<li>Event Delegation</li>
-						</ol>
-					</li>
-					<li>The design of UI components is laid out in following manner:
-						<ul>
-							<li>CompanyApp Component
-								<ul>
-									<li>CompanyList: Encapsulates the render code for displaying list of companies</li>
-									<li>Company: Object representing Company. Demonstrates on how to bind onClick event for deleting and passing the event right to the parent to mutate the state.</li>
-									<li>NewRow: Object used to capture the input data. Represents the state.</li>
-								</ul>
-							</li>
-						</ul>
-					</li>
-				</ul>
-			</div>
-		</div>
-    </div>
+
+
+
     <script type="text/jsx">
       /** @jsx React.DOM */
-      var CompanyApp = React.createClass({
+      var QuestionApp = React.createClass({
         getInitialState: function() {
-          return {companylist:this.props.companies};
+          return {questionlist:this.props.questions};
         },
-        handleNewRowSubmit: function( newcompany ) {
-          this.setState( {companylist: this.state.companylist.concat([newcompany])} );
+        handleNewRowSubmit: function( newquestion ) {
+          this.setState( {questionlist: this.state.questionlist.concat([newquestion])} );
         },
-        handleCompanyRemove: function( company ) {
+        handleQuestionRemove: function( question ) {
 
           var index = -1;
-          var clength = this.state.companylist.length;
+          var clength = this.state.questionlist.length;
       		for( var i = 0; i < clength; i++ ) {
-      			if( this.state.companylist[i].cname === company.cname ) {
+      			if( this.state.questionlist[i].cname === question.cname ) {
       				index = i;
       				break;
       			}
       		}
-      		this.state.companylist.splice( index, 1 );
-      		this.setState( {companylist: this.state.companylist} );
+      		this.state.questionlist.splice( index, 1 );
+      		this.setState( {questionlist: this.state.questionlist} );
         },
         render: function() {
           var tableStyle = {width: '100%'};
@@ -268,7 +170,7 @@
             <table style={tableStyle}>
               <tr>
                 <td style={leftTdStyle}>
-                  <CompanyList clist={this.state.companylist}  onCompanyRemove={this.handleCompanyRemove}/>
+                  <QuestionList clist={this.state.questionlist}  onQuestionRemove={this.handleQuestionRemove}/>
                 </td>
                 <td style={rightTdStyle}>
                   <NewRow onRowSubmit={this.handleNewRowSubmit}/>
@@ -279,40 +181,38 @@
         }
       });
 
-      var CompanyList = React.createClass({
-        handleCompanyRemove: function(company){
-          this.props.onCompanyRemove( company );
+      var QuestionList = React.createClass({
+        handleQuestionRemove: function(question){
+          this.props.onQuestionRemove( question );
         },
         render: function() {
-          var companies = [];
-          var that = this; // TODO: Needs to find out why that = this made it work; Was getting error that onCompanyDelete is not undefined
-          this.props.clist.forEach(function(company) {
-            companies.push(<Company company={company} onCompanyDelete={that.handleCompanyRemove} /> );
+          var questions = [];
+          var that = this;
+          this.props.clist.forEach(function(question) {
+            questions.push(<Question question={question} onQuestionDelete={that.handleQuestionRemove} /> );
           });
           return (
             <div>
-              <h3>List of Companies</h3>
               <table className="table table-striped">
-                <thead><tr><th>Company Name</th><th>Employees</th><th>Head Office</th><th>Action</th></tr></thead>
-                <tbody>{companies}</tbody>
+                <thead><tr><th>Question</th><th>Question Type</th><th>Action</th></tr></thead>
+                <tbody>{questions}</tbody>
               </table>
             </div>
             );
         }
       });
 
-      var Company = React.createClass({
-        handleRemoveCompany: function() {
-          this.props.onCompanyDelete( this.props.company );
+      var Question = React.createClass({
+        handleRemoveQuestion: function() {
+          this.props.onQuestionDelete( this.props.question );
           return false;
         },
         render: function() {
           return (
             <tr>
-              <td>{this.props.company.cname}</td>
-              <td>{this.props.company.ecount}</td>
-              <td>{this.props.company.hoffice}</td>
-              <td><input type="button"  className="btn btn-primary" value="Remove" onClick={this.handleRemoveCompany}/></td>
+              <td>{this.props.question.cname}</td>
+              <td>{this.props.question.ecount}</td>
+              <td><input type="button"  className="btn btn-primary" value="Remove" onClick={this.handleRemoveQuestion}/></td>
             </tr>
             );
         }
@@ -322,40 +222,35 @@
         handleSubmit: function() {
           var cname = this.refs.cname.getDOMNode().value;
           var ecount = this.refs.ecount.getDOMNode().value;
-          var hoffice = this.refs.hoffice.getDOMNode().value;
-          var newrow = {cname: cname, ecount: ecount, hoffice: hoffice };
+          var newrow = {cname: cname, ecount: ecount};
           this.props.onRowSubmit( newrow );
 
           this.refs.cname.getDOMNode().value = '';
           this.refs.ecount.getDOMNode().value = '';
-          this.refs.hoffice.getDOMNode().value = '';
           return false;
         },
         render: function() {
           var inputStyle = {padding:'12px'}
           return (
             <div className="well">
-              <h3>Add A Company</h3>
+              <h3>Add A Question</h3>
             <form onSubmit={this.handleSubmit}>
               <div className="input-group input-group-lg" style={inputStyle}>
-                <input type="text"  className="form-control col-md-8"  placeholder="Company Name" ref="cname"/>
+                <input type="text"  className="form-control col-md-8"  placeholder="Question" ref="cname"/>
               </div>
               <div className="input-group input-group-lg" style={inputStyle}>
-                <input type="text"  className="form-control col-md-8" placeholder="Employee Count" ref="ecount"/>
+                <input type="text"  className="form-control col-md-8" placeholder="Question Type" ref="ecount"/>
               </div>
               <div className="input-group input-group-lg" style={inputStyle}>
-                <input type="text"  className="form-control col-md-8" placeholder="Headoffice" ref="hoffice"/>
-              </div>
-              <div className="input-group input-group-lg" style={inputStyle}>
-                <input type="submit"  className="btn btn-primary" value="Add Company"/>
+                <input type="submit"  className="btn btn-primary" value="Add Question"/>
               </div>
             </form>
             </div>
             );
         }
       });
-      var defCompanies = [{cname:"Infosys Technologies",ecount:150000,hoffice:"Bangalore"},{cname:"TCS",ecount:140000,hoffice:"Mumbai"}];
-      React.renderComponent( <CompanyApp companies={defCompanies}/>, document.getElementById( "companyApp" ) );
+      var defQuestions = [{cname:"Infosys Technologies",ecount:150000},{cname:"TCS",ecount:140000}];
+      React.renderComponent( <QuestionApp questions={defQuestions}/>, document.getElementById( "questionApp" ) );
     </script>
 
   </body></html>
