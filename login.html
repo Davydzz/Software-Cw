@@ -2,28 +2,36 @@
 <html lang="en">
     <head>
         <title>Feedback System</title>
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:wght@200&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="css/main.css" type="text/css">
     </head>
 
     <body>
-        <div class="box"><h1>Feedback System</h1></div>
-        <br>
+        <div class="box header"><h2>Feedback System</h2></div>
 
-
+        
         <div class="screenbox">
-            <br>
-            <br>
             
-            <div class="textbox"> <br>
+            <h1>
+                Login Portal
+            </h1>
 
-            <form method="post" action="">
-                <label class="labelLogin">Username: </label><input type="input" name="username" required class="inputBox"><br><br>
-                <label class="labelLogin">Password: </label><input type="password" name="password" required class="inputBox"><br>
-                <br>
-                <input type="submit" value="Login" class="centreButton">
+            <form class="loginform" method="post" action="">
+                <div class="question">
+                    <input type="text" required/>
+                    <label>Username</label>
+                </div>
+                <div class="question">
+                    <input type="password" required/>
+                    <label>Password</label>
+                </div>
+                <input type="submit" value="Login" class="button">
             </form>
-            <br>
-            </div>
+
+            
+           
+        </div>
 
     </body>
 
