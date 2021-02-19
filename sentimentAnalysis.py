@@ -8,7 +8,7 @@ obj = SentimentIntensityAnalyzer()
 
 def create_connection(databaseFile):
     """ 
-    :param databaseFile: database file
+    :param: databaseFile: database file
     :return: Connection object or None
     """
     conn = None
@@ -26,8 +26,7 @@ def getFromDB(sessionID, conn):
 
     connection = conn.cursor()
     # Skeleton for future database
-    connection.execute("SELECT * FROM tableName WHERE sessionID = ? ", sessionID) # will probably need to add time to it
-    
+    connection.execute("SELECT feedbackText FROM feedback WHERE feedbackFormID = (SELECT feedbackFormID from feedback WHERE eventID = ?) ", sessionID)
     return connection.fetchAll()
 
 
