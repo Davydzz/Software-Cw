@@ -24,12 +24,15 @@ db = DBConnection()
 @app.before_request
 def before_request():
     g.user = None
-    if 'user_id' in session:
+    g.room_code = None
+    if "user_id" in session:
         thisUserID = session["user_id"]
         results = db.getUserFromUserID(thisUserID)
         print(results)
         thisUser = User(thisUserID, results[5], results[3])
         g.user = thisUser
+    if "room_code" in session:
+        g.room_code = session["room_code"]
 
 @app.route('/', methods=["GET", "POST"])
 def home():
@@ -42,8 +45,25 @@ def profile():
         return redirect(url_for("login"))
     return render_template("create_or_join.html")
 
-@app.route("/join")
+@app.route("/attendee")
+def attendee():
+    return render_template("deliver_feedback.html")
+
+@app.route("/join", methods=["GET", "POST"])
 def joinEvent():
+    global db
+    if request.method == "POST":
+        session.pop("room_code",None) #remove room code if it is set
+        roomCode = request.form["roomCode"]
+        userID = None
+        if "user_id" in session:
+            userID = session["user_id"]
+        if db.joinEvent(roomCode, userID):
+            #redirect to deliver feedback page
+            session["room_code"] = roomCode
+            return redirect(url_for("attendee"))
+
+
     return render_template("join.html")
 
 @app.route("/create")

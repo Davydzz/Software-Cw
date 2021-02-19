@@ -16,7 +16,6 @@ class DBConnection:
         #check user is not already in db
         conn = self.createConnection(self.database)
         existingUserStatement = ("SELECT * FROM users WHERE email = '%s'" % email)
-        print(existingUserStatement)
         for row in conn.execute(existingUserStatement):
             print(row)
             #already exists
@@ -56,4 +55,33 @@ class DBConnection:
         getUserStatement = ("SELECT * FROM users WHERE userID = '%s';" % uID)
         for row in conn.execute(getUserStatement):
             return row
+
+    def createEvent(self):
+        pass
+        #room code
+        #event name
+        #feedback frequency
+        #hostuserID
+        #date text
+        #active bool
+
+    def joinEvent(self, roomCode, userID):
+        #connect to db
+        conn = self.createConnection(self.database)
+
+        #if room code exists in events 
+        eventExistsStatement = ("SELECT * FROM events WHERE roomCode = '%s';" % roomCode)
+        roomCodeExists = False
+        for row in conn.execute(eventExistsStatement):
+            roomCodeExists = True
+        
+        if roomCodeExists:
+            if userID != None:
+                #then add userID to event_members
+                addUserToEventsStatement = ("INSERT INTO event_members (roomcode, userID) VALUES ('%s', '%s')" % (roomCode, userID))
+                conn.execute(addUserToEventsStatement)
+                conn.commit()
+            return True
             
+        print("Room code doesn't exist")
+        return False
