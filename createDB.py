@@ -30,7 +30,7 @@ def main():
                                     eventName text,
                                     feedbackFrequency text,
                                     hostUserID int,
-                                    date text NOT NULL,
+                                    date DATETYPE NOT NULL,
                                     active bool NOT NULL,
                                     FOREIGN KEY(hostUserID) REFERENCES Users(userID),
                                     PRIMARY KEY (roomcode)
