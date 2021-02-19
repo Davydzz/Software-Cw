@@ -2,23 +2,19 @@
 
 <HTML>
 <HEAD>
-	<TITLE> Add/Remove dynamic rows in HTML table </TITLE>
+	<TITLE> Add/Remove Questions on Form</TITLE>
+  <h3>Add/Remove Questions on Create Form</h3>
 	<SCRIPT language="javascript">
 		function addRow(tableID) {
 
 			var table = document.getElementById(tableID);
-
 			var rowCount = table.rows.length;
 			var row = table.insertRow(rowCount);
-
 			var colCount = table.rows[0].cells.length;
 
 			for(var i=0; i<colCount; i++) {
-
 				var newcell	= row.insertCell(i);
-
 				newcell.innerHTML = table.rows[0].cells[i].innerHTML;
-				//alert(newcell.childNodes);
 				switch(newcell.childNodes[0].type) {
 					case "text":
 							newcell.childNodes[0].value = "";
@@ -43,41 +39,70 @@
 				var chkbox = row.cells[0].childNodes[0];
 				if(null != chkbox && true == chkbox.checked) {
 					if(rowCount <= 1) {
-						alert("Cannot delete all the rows.");
+						alert("Cannot delete all rows.");
 						break;
 					}
 					table.deleteRow(i);
 					rowCount--;
 					i--;
 				}
-
-
 			}
 			}catch(e) {
 				alert(e);
 			}
 		}
 
+    function verifyInput(tableID) {
+      var table = document.getElementById(tableID);
+      var valid = true;
+
+      for (var i = 0; i < table.rows.length ;i++) {
+          var row = table.rows[i];
+          var col1 = row.cells[1].childNodes[0].value;
+          var col2 = row.cells[2].childNodes[1].value;
+
+          if (col1 == "" || col2 == "") valid = false;
+      }
+
+      if (valid == true) {
+
+        alert("table valid");
+
+        //insert database stuff here - use iteration from before
+
+
+      }
+
+      else alert("Error - All fields must be filled");
+
+    }
+
+
+
 	</SCRIPT>
 </HEAD>
 <BODY>
 
-	<INPUT type="button" value="Add Row" onclick="addRow('dataTable')" />
-
-	<INPUT type="button" value="Delete Row" onclick="deleteRow('dataTable')" />
+	<INPUT type="button" value="Add Question" onclick="addRow('dataTable')" />
+	<INPUT type="button" value="Delete Question" onclick="deleteRow('dataTable')" />
+  <br><br>
 
 	<TABLE id="dataTable" width="350px" border="1">
 		<TR>
 			<TD><INPUT type="checkbox" name="chk"/></TD>
 			<TD><INPUT type="text" name="txt"/></TD>
 			<TD>
-				<SELECT name="country">
-					<OPTION value="sr">Star Rating</OPTION>
-					<OPTION value="tb">Text</OPTION>
+				<SELECT name="question">
+          <option value= ""></option>
+					<OPTION value="Star Rating">Star Rating</OPTION>
+					<OPTION value="Text">Text</OPTION>
 				</SELECT>
 			</TD>
 		</TR>
 	</TABLE>
+
+  <br>
+  <INPUT type="button" value="Create Form" onclick="verifyInput('dataTable')" />
 
 </BODY>
 </HTML>
