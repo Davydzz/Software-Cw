@@ -40,6 +40,7 @@ def main():
     feedback_form = """CREATE TABLE FeedbackForm (
                                     feedbackFormID int PRIMARY KEY,
                                     eventID int,
+                                    overallSentiment int,
                                     FOREIGN KEY(eventID) REFERENCES Event(EventID)
                                 );"""
 

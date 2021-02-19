@@ -27,20 +27,36 @@ def getFromDB(sessionID, conn):
     connection = conn.cursor()
     # Skeleton for future database
     connection.execute("SELECT feedbackText FROM feedback WHERE feedbackFormID = (SELECT feedbackFormID from feedback WHERE eventID = ?) ", sessionID)
-    return connection.fetchAll()
+    userID, feedBackText = connection.fetchAll()
+    return [userID, feedBackText]
 
 
 def getSentimentScore(msgs, obj):
 
     sentimentList = []
-    for row in msgs:
-        score = obj.polarity_scores(row)
-        sentimentList.append(score['compound'])
+    for user, msg in msgs:
+        score = obj.polarity_scores(msg)
+        sentimentList.append([user, score['compound']])
 
     return sentimentList
 
+def addBackToTable(conn, sentimentList):
+    
+    totalScore = 0
+    for user, score in sentimentList:
+        totalScore
+        insertStatement = "INSERT INTO feedback (sentiment) VALUES ? WHERE userID = ?"
+        connection = conn.cursor()
+        connection.execute(insertStatement, (score, user))
+
+    #overallSentiment = 
+
+
+
+
 def averageSentiment(list):
-    return sum(list) / len(list)
+    
+    return sum(list[1]) / len(list)
 
 
 
