@@ -20,7 +20,7 @@ class DBConnection:
             print(row)
             #already exists
             return False, None
-        
+
         if conn is not None:
             insertStatement = ("INSERT INTO users (salt, password, firstName, lastName, email) VALUES ('%s', '%s', '%s', '%s', '%s')" % (salt, password, fName, lName, email))
             conn.execute(insertStatement)
@@ -56,25 +56,37 @@ class DBConnection:
         for row in conn.execute(getUserStatement):
             return row
 
-    def createEvent(self):
-        pass
-        #room code
-        #event name
-        #feedback frequency
-        #hostuserID
-        #date text
-        #active bool
+    def createEvent(self, eventName, feedbackFrequency, hostUserID, date, active):
+
+        #With 10,000 events the collision rate is just over 1%
+        validCode = False
+        while not (validCode):
+            validCode = True
+            from random import randint
+            roomcode = (randint(100000,999999))
+            roomcode = str(roomcode)
+
+            conn = self.createConnection(self.database)
+            existingEventStatement = ("SELECT * FROM events WHERE roomcode = '%s'" % roomcode)
+            for row in conn.execute(existingEventStatement):
+                validCode = False
+
+        if conn is not None:
+            insertStatement = ("INSERT INTO events (roomcode, eventName, feedbackFrequency, hostUserID, date, active) VALUES ('%s', '%s', '%s', '%s', '%s', '%s')" % (roomcode, eventName, feedbackFrequency, hostUserID, date, active))
+            conn.execute(insertStatement)
+            conn.commit()
+            return True, roomcode
 
     def joinEvent(self, roomCode, userID):
         #connect to db
         conn = self.createConnection(self.database)
 
-        #if room code exists in events 
+        #if room code exists in events
         eventExistsStatement = ("SELECT * FROM events WHERE roomCode = '%s';" % roomCode)
         roomCodeExists = False
         for row in conn.execute(eventExistsStatement):
             roomCodeExists = True
-        
+
         if roomCodeExists:
             if userID != None:
                 #then add userID to event_members
@@ -82,6 +94,6 @@ class DBConnection:
                 conn.execute(addUserToEventsStatement)
                 conn.commit()
             return True
-            
+
         print("Room code doesn't exist")
         return False
