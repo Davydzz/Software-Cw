@@ -6,6 +6,8 @@ from user import User
 import sqlite3
 from dbConnection import DBConnection
 
+from datetime import date
+
 #https://www.youtube.com/watch?v=2Zz97NVbH0U&ab_channel=PrettyPrinted
 #https://github.com/PrettyPrinted/youtube_video_code/tree/master/2020/02/10/Creating%20a%20Login%20Page%20in%20Flask%20Using%20Sessions/flask_session_example
 #16/02/2021
@@ -47,6 +49,7 @@ def profile():
 
 @app.route("/attendee")
 def attendee():
+    #get what the feedback form looks like
     return render_template("deliver_feedback.html")
 
 @app.route("/join", methods=["GET", "POST"])
@@ -66,8 +69,32 @@ def joinEvent():
 
     return render_template("join.html")
 
-@app.route("/create")
+@app.route("/create", methods=["GET","POST"])
 def createEvent():
+    global db
+    if request.method == "POST":
+        session.pop("room_code",None) #remove room code if it is set
+        eventName = request.form["eventName"]
+        template = request.form["template"]
+        feedbackFrequency = request.form["feedbackFrequency"]
+        
+        hour = request.form["hour"]
+        minute = request.form["minute"]
+
+        session["eventName"] = eventName
+        session["template"] = template
+        session["feedbackFrequency"] = feedbackFrequency
+        session["hour"] = hour
+        session["minute"] = minute #no idea if this is good coding
+
+        #print(eventName, template, feedbackFrequency)
+        #print(hour, minute)
+        if template == "Create":
+            return redirect(url_for("createTemplate"))
+        else:
+            pass
+
+
     return render_template("create_event.html")
 
 @app.route('/login', methods=["GET","POST"])
@@ -119,4 +146,43 @@ def register():
             return redirect(url_for("register"))
 
     return render_template("register.html")
+
+@app.route("/createtemplate", methods=["GET","POST"])
+#https://stackoverflow.com/questions/17752301/dynamic-form-fields-in-flask-request-form 24/02/2021
+def createTemplate():
+    global db
+
+    if request.method == "POST":
+        result = {}
+        try:           
+            form = request.form
+            result["txt"] = []
+            result["questionType"] = []
+            
+            for key in form.keys():
+                for value in form.getlist(key):
+                    if key == "txt":
+                        if value == "":
+                            raise Exception
+                    elif key == "questionType":
+                        if value == "blank":
+                            raise Exception
+
+                    result[key].append(value)
+            print(result)
+
+            #add event to database
+            today = date.today()
+            db.createEvent(session["eventName"], session["feedbackFrequency"], session["user_id"], today , True) 
+            #add feedback form to the database db.addFeedbackForm(...)
+
+            return redirect(url_for("liveFeedback"))
+        except Exception as e:
+            print(e)
+            print("You failed")
+    return render_template("addqs.html")
+
+@app.route("/liveFeedback")
+def liveFeedback():
+    return render_template("livefeedback.html")
 
