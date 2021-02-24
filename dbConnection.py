@@ -8,6 +8,7 @@ class DBConnection:
         conn = None
         try:
             conn = sqlite3.connect(db)
+            conn.execute("PRAGMA foreign_keys = ON")
         except:
             print("Connection didn't work")
         return conn
@@ -17,7 +18,7 @@ class DBConnection:
         conn = self.createConnection(self.database)
         existingUserStatement = ("SELECT * FROM users WHERE email = '%s'" % email)
         for row in conn.execute(existingUserStatement):
-            print(row)
+            #print(row)
             #already exists
             return False, None
 
@@ -27,6 +28,32 @@ class DBConnection:
             conn.commit()
             userID = self.getIDFromEmail(email)
             return True, userID
+
+
+    #feedbackFormID refers to the feedback form that the feedback belongs to
+    def addFeedback(self, userID, anonymous, timestamp, feedbackFormID, roomcode, feedbackText, sentiment): #used for registration
+        conn = self.createConnection(self.database)
+
+        if conn is not None:
+            insertStatement = ("INSERT INTO feedback (userID, anonymous, timestamp, feedbackFormID, roomcode, feedbackText, sentiment) VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s')" % (userID, anonymous, timestamp, feedbackFormID, roomcode, feedbackText, sentiment))
+            conn.execute(insertStatement)
+            id = conn.execute('select last_insert_rowID();')
+            id = id.fetchone()
+            id = id[0]
+            conn.commit()
+            return True,id
+
+    def createFeedbackForm(self, eventID, overallSentiment):
+        conn = self.createConnection(self.database)
+
+        if conn is not None:
+            insertStatement = ("INSERT INTO feedbackform (eventID, overallSentiment) VALUES ('%s', '%s')" % (eventID, overallSentiment))
+            conn.execute(insertStatement)
+            id = conn.execute('select last_insert_rowID();')
+            id = id.fetchone()
+            id = id[0]
+            conn.commit()
+            return True,id
 
     def confirmLogin(self, email, password):
         conn = self.createConnection(self.database)
