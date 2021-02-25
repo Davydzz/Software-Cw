@@ -40,23 +40,18 @@ def getSentimentScore(msgs, obj):
 
     return sentimentList
 
-def addBackToTable(conn, sentimentList):
-    
+def addBackToTable(conn, sentimentList, sessionID):
+    connection = conn.cursor()
     totalScore = 0
     for user, score in sentimentList:
-        totalScore
+        totalScore += score
         insertStatement = "INSERT INTO feedback (sentiment) VALUES ? WHERE userID = ?"
-        connection = conn.cursor()
         connection.execute(insertStatement, (score, user))
 
-    #overallSentiment = 
+    overallSentiment = totalScore/len(sentimentList)
 
-
-
-
-def averageSentiment(list):
-    
-    return sum(list[1]) / len(list)
+    insertOverall = "INSERT INTO feedback_form (overeallSentiment) VALUES ? WHERE feedbackFormID = (SELECT feedbackFormID from feedback WHERE eventID = ?) "
+    connection.execute(insertOverall, (overallSentiment, sessionID))
 
 
 
