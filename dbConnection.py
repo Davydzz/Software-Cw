@@ -125,9 +125,10 @@ class DBConnection:
         print("Room code doesn't exist")
         return False
 
+    # Fix bug tmr morning
     def addTemplate(self, result, roomCode):
 
-        #With 10,000 events the collision rate is just over 1%
+        
         conn = self.createConnection(self.database)
         addFeedbackForm = ("INSERT INTO FeedBackForm(eventID, overallSentiment) VALUES ?,?")
         addQuestion = ("INSERT INTO Question values (questionNumber, type, content, feedbackFormID) VALUES ?,?,?,?")

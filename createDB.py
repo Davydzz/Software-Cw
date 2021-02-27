@@ -82,15 +82,14 @@ def main():
                                     email text
                                   );"""
 
+    # Removed feedbackID since feedbackTable already contains feedbackID and feedbackformID
     questions = """CREATE TABLE Question (
                                     questionID INTEGER PRIMARY KEY AUTOINCREMENT,
                                     questionNumber int,
                                     type text,
                                     content text,
                                     feedbackFormID int,
-                                    feedbackID int,
-                                    FOREIGN KEY(feedbackFormID) REFERENCES FeedbackForm(feedbackFormID),
-                                    FOREIGN KEY(feedbackID) REFERENCES Feedback(feedbackID)
+                                    FOREIGN KEY(feedbackFormID) REFERENCES FeedbackForm(feedbackFormID)
                                 );"""
 
 

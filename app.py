@@ -192,6 +192,7 @@ def createTemplate():
             today = date.today()
             bool, roomCode = db.createEvent(session["eventName"], session["feedbackFrequency"], session["user_id"], today , True) 
             #add feedback form to the database db.addFeedbackForm(...)
+            db.addTemplate(result, roomCode)
 
             return redirect(url_for("liveFeedback"))
         except Exception as e:
