@@ -3,6 +3,8 @@ from flask import Flask, flash, redirect, render_template, request, session, abo
 import os
 from user import User
 
+import sys
+
 import sqlite3
 from dbConnection import DBConnection
 

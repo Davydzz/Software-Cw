@@ -128,28 +128,24 @@ class DBConnection:
     # Fix bug tmr morning
     def addTemplate(self, result, roomCode):
 
-        
         conn = self.createConnection(self.database)
-        addFeedbackForm = ("INSERT INTO FeedbackForm(eventID, overallSentiment) VALUES (?,?)")
-        addQuestion = ("INSERT INTO Question values (questionNumber, type, content, feedbackFormID) VALUES (?,?,?,?)")
-        getFeebackFormID = ("SELECT feedbackFormID FROM FeedbackForm WHERE eventID = ?")
+        addFeedbackForm = ("INSERT INTO FeedbackForm(eventID, overallSentiment) VALUES (?,?);")
+        addQuestion = ("INSERT INTO Question(questionNumber, type, content, feedbackFormID) VALUES (?,?,?,?);")
+        getFeedbackFormID = ("SELECT feedbackFormID FROM FeedbackForm WHERE eventID = ?")
 
         conn.execute(addFeedbackForm, (roomCode, 0))
-        feedBackID = conn.execute(getFeebackFormID, roomCode)
+        for row in conn.execute(getFeedbackFormID, (roomCode,)):
+            feedBackID = row[0]
         questionNo = 1
-
+        
         try:
             for elem in result:
-
-                conn.execute(addQuestion,(questionNo, elem[1], elem[0],feedBackID))
+                conn.execute(addQuestion,(questionNo, elem[1], elem[0],feedBackID)) #it dies on this line
                 questionNo +=1
             
             conn.commit()
             return True
         except Exception as e:
-
+            print(e)
             print("Template creation failure")
             return False
-        
-        #for i in result:
-            
