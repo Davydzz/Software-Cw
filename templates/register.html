@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Feedback System</title>
+        <link rel="stylesheet" href="{{ url_for('static',filename='styles/main.css') }}" type="text/css">
+    </head>
+
+    <body>
+        <div class="box"><h1>Register</h1></div>
+        <br>
+
+
+        <div class="screenbox">
+            <br>
+            <br>
+            
+            <div class="box"> <br>
+
+            <form method="post" action="">
+                <label class="labelLogin">Username: </label><input type="input" name="username" required class="inputBox"><br>
+                <label class="labelLogin">First Name: </label><input type="input" name="firstName" required class="inputBox"><br>
+                <label class="labelLogin">Last Name: </label><input type="input" name="lastName" required class="inputBox"><br>
+                <label class="labelLogin">Email: </label><input type="input" name="email" required class="inputBox"><br>
+                <label class="labelLogin">Password: </label><input type="password" name="password" required class="inputBox"><br>
+                <label class="labelLogin">Confirm Password: </label><input type="password" name="passwordConfirm" required class="inputBox"><br>
+                <br>
+                <input type="submit" value="Register" class="centreButton">
+            </form>
+            <br>
+            </div>
+
+    </body>
+
+</html>

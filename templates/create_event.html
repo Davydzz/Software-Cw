@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Feedback System</title>
+        <link rel="stylesheet" href="{{ url_for('static',filename='styles/main.css') }}" type="text/css">
+    </head>
+
+    <body>
+        <div class="box"><h1>Feedback System</h1></div>
+        <br>
+
+        <div class="screenbox">
+            <br>
+            <br>
+
+            <form action="" class="centrecontent" method="post">
+                <input type="input" placeholder="Enter Event Name" style="font-size:35px" name="eventName" class="centreButton"><br><br>
+
+                <label class="labelLogin">Template: </label>
+                <select name="template"><br><br>
+                    <option value="Template1">Template1</option><br><br>
+                    <option value="Template2">Template2</option><br><br>
+                    <option value="Create">Create your Own Template</option><br>
+                </select><br><br>
+
+                <label class="labelLogin">Feedback Frequency: </label>
+                <select name="feedbackFrequency" onchange="displayDivDemo('hideValuesOnSelect',this)"><br><br>
+                    <option value="prompt">When Prompted by Host</option><br><br>
+                    <option value="attendeeChoice">When an Attendee Chooses</option><br><br>
+                    <option value="interval">At Set Intervals</option><br>
+                </select><br><br>
+
+                <div id="hideValuesOnSelect" style="display:none">
+                    <input type="input" placeholder="Hour" name = "hour" style="font-size:35px"><br><br>
+                    <input type="input" placeholder="Minute" name = "minute" style="font-size:35px"><br><br>
+                </div>
+                <input type="submit" value="Submit" class="centreButton"><br>
+            </form>
+            <!-- https://www.tutorialspoint.com/how-can-i-show-a-hidden-div-when-a-select-option-is-selected-in-javascript#:~:text=To%20show%20a%20hidden%20div,display%E2%80%9D%20to%20block. -->
+            <script src="{{ url_for('static', filename='js/intervalOption.js') }}"></script>
+        <br>
+        <br>
+    </body>
+
+</html>
