@@ -42,7 +42,7 @@ def main():
                                     feedbackFormID INTEGER PRIMARY KEY AUTOINCREMENT,
                                     eventID int,
                                     overallSentiment int,
-                                    FOREIGN KEY(eventID) REFERENCES Event(EventID)
+                                    FOREIGN KEY(eventID) REFERENCES events(roomcode)
                                 );"""
 
     event_membersTable = """CREATE TABLE event_members(

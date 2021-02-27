@@ -153,27 +153,44 @@ def createTemplate():
     global db
 
     if request.method == "POST":
-        result = {}
+        #result = {}
+        #A hashmap will not preserve the index of the qs (txt and qT need to match)
+        # Example=  {'txt': ['hello', 'hello1'], 'questionType': ['Text', 'Text']}
+        # There is no link between "hello" and "Text"
+        
+        result = []
         try:           
             form = request.form
-            result["txt"] = []
-            result["questionType"] = []
-            
+            #result["txt"] = []
+            #result["questionType"] = []
+
+            index = 0
+
             for key in form.keys():
                 for value in form.getlist(key):
+
                     if key == "txt":
                         if value == "":
                             raise Exception
+                        else:
+                            result.append([value])
                     elif key == "questionType":
                         if value == "blank":
                             raise Exception
+                        else:
+                            result[index].append(value)
+                            index +=1
 
-                    result[key].append(value)
+                #index +=1
+                    #result[key].append(value)
             print(result)
+
+            #Now the txt and qT match up
+            #[['hello', 'Text'], ['hello2', 'Text']]
 
             #add event to database
             today = date.today()
-            db.createEvent(session["eventName"], session["feedbackFrequency"], session["user_id"], today , True) 
+            bool, roomCode = db.createEvent(session["eventName"], session["feedbackFrequency"], session["user_id"], today , True) 
             #add feedback form to the database db.addFeedbackForm(...)
 
             return redirect(url_for("liveFeedback"))

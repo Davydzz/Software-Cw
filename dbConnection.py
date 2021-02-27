@@ -124,3 +124,31 @@ class DBConnection:
 
         print("Room code doesn't exist")
         return False
+
+    def addTemplate(self, result, roomCode):
+
+        #With 10,000 events the collision rate is just over 1%
+        conn = self.createConnection(self.database)
+        addFeedbackForm = ("INSERT INTO FeedBackForm(eventID, overallSentiment) VALUES ?,?")
+        addQuestion = ("INSERT INTO Question values (questionNumber, type, content, feedbackFormID) VALUES ?,?,?,?")
+        getFeebackFormID = ("SELECT feedbackFormID FROM FeedbackForm WHERE eventID = ?")
+
+        conn.execute(addFeedbackForm, (roomCode, 0))
+        feedBackID = conn.execute(getFeebackFormID, roomCode)
+        questionNo = 1
+
+        try:
+            for elem in result:
+
+                conn.execute(addQuestion,(questionNo, elem[1], elem[0],feedBackID))
+                questionNo +=1
+            
+            conn.commit()
+            return True
+        except Exception as e:
+
+            print("Template creation failure")
+            return False
+        
+        #for i in result:
+            
