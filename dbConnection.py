@@ -130,8 +130,8 @@ class DBConnection:
 
         
         conn = self.createConnection(self.database)
-        addFeedbackForm = ("INSERT INTO FeedBackForm(eventID, overallSentiment) VALUES ?,?")
-        addQuestion = ("INSERT INTO Question values (questionNumber, type, content, feedbackFormID) VALUES ?,?,?,?")
+        addFeedbackForm = ("INSERT INTO FeedbackForm(eventID, overallSentiment) VALUES (?,?)")
+        addQuestion = ("INSERT INTO Question values (questionNumber, type, content, feedbackFormID) VALUES (?,?,?,?)")
         getFeebackFormID = ("SELECT feedbackFormID FROM FeedbackForm WHERE eventID = ?")
 
         conn.execute(addFeedbackForm, (roomCode, 0))
