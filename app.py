@@ -50,7 +50,7 @@ def profile():
         return redirect(url_for("login"))
     return render_template("create_or_join.html")
 
-@app.route("/attendee")
+@app.route("/attendee", methods=["GET","POST"])
 def attendee():
     #get what the feedback form looks like
     global db
@@ -58,7 +58,35 @@ def attendee():
     print(feedbackQuestions)
 
     g.jdump = json.dumps(feedbackQuestions)
-    #feedbackQuestions = json.dumps(jobj)
+
+    if request.method == "POST":
+        print("POST")
+        #add that to the database!
+        result = []
+        try:
+            anonymous = request.form["anonymous"] #will be a string, either "True" for anonymous or "False" for not anonymous            
+            form = request.form
+
+            for key in form.keys():
+                for value in form.getlist(key):
+                    if key == "starRating":
+                        if value == "":
+                            raise Exception
+                        else:
+                            result.append(value)
+                    elif key == "text":
+                        if value == "":
+                            raise Exception
+                        else:
+                            result.append(value)
+                            
+            print(anonymous) 
+            print(result)
+
+        except Exception as e:
+            print(e)
+            print("You failed")
+
     return render_template("deliver_feedback.html")
 
 @app.route("/join", methods=["GET", "POST"])

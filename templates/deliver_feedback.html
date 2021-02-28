@@ -5,19 +5,63 @@
         <link rel="stylesheet" href="{{ url_for('static',filename='styles/main.css') }}" type="text/css">
 
     </head>
-    <script src="{{ url_for('static', filename='js/jquery-3.4.1.min.js') }}"></script>
+
+    <!-- https://stackoverflow.com/questions/17001961/how-to-add-drop-down-list-select-programmatically star rating drop down 28/02/2021 -->
+
     <script>
-    function makeTableHTML(a){ 
-    // takes (key, value) pairs from and array and returns
-    // corresponding html, i.e. [ [1,2], [3,4], [5,6] ] 
-      return [
-        "<tr>\n<th>",
-        a.map(function (e, i) {
-          return e.join("</th>\n<td>")
-        }).join("</td></tr>\n<tr>\n<th>"),
-        "</td>\n</tr>\n"
-      ].join("")
-    }
+        function createTable(tableData) {
+            var table = document.getElementById('thisTable');
+
+            var tablediv = document.getElementById('tablediv');
+
+            var form = document.getElementById('feedbackform');
+
+            
+            var tableBody = document.createElement('tbody');
+
+            tableData.forEach(function(rowData) {
+                var row = document.createElement('tr');
+                for(var i=0; i<3; i++) {
+                    var cellData = rowData[i];
+                    if (i == 2) {
+                        switch(cellData) {
+                            case "Star Rating":
+                                var cell = document.createElement('td');
+                                var sel = document.createElement('select');
+                                sel.name = "starRating"
+                                var values = [
+                                    "",
+                                    "1",
+                                    "2",
+                                    "3",
+                                    "4",
+                                    "5"
+                                    ];
+                                var options = values.map(value => { return `<option value="${value}">${value}</option>)` });
+                                sel.innerHTML = options;
+                                cell.appendChild(sel);  
+                                break;
+                            case "Text":
+                                var cell = document.createElement('td');
+                                var textbox = document.createElement('input');
+                                textbox.name="text"
+                                cell.appendChild(textbox); 
+                        }
+                    } else {
+                        var cell = document.createElement('td');
+                        cell.appendChild(document.createTextNode(cellData));
+                    }     
+                    row.appendChild(cell);    
+                }
+                tableBody.appendChild(row);
+            });
+        
+            table.appendChild(tableBody);
+            form.appendChild(table);
+            tablediv.appendChild(form);
+            
+            
+            }
     </script>
 
 
@@ -27,30 +71,38 @@
         <div class="box"><h1>Feedback System</h1></div>
         <br>
 
-        <div class="screenbox">
+        <div class="screenbox" id="tablediv" width="600px">
             <h1>{{g.room_code}}</h1>
           
             <!-- <p>{{g.feedbackQuestions}}</p> -->
 
-            <table id="metaConfigTable">
-                <caption>This is your target table</caption>
-                <tr>
-                    <th>Key</th>
-                    <th>Value</th>
-                </tr>
-            </table>
+            <form action="" method="post" id="feedbackform">
+                <table id="thisTable" name="thisTable" width="350px">
+                    <caption>Feedback Form</caption>
+                    <tr>
+                        <th></th>
+                        <th>Question</th>
+                        <th>Feedback</th>
+                    </tr>
+                </table>
+                <br>
+
+                <label>Anonymous</label> 
+                <select name="anonymous">
+                    <option value="False">Feedback is NOT Anonymous</option>
+                    <option value="True">Feedback is Anonymous</option>
+                </select>
+            
+                <input type="submit" value="Submit" />
+            </form>
 
             <script>
-
                 var entries = JSON.parse('{{ g.jdump|safe }}');
+
+                createTable(entries);
                 console.log(entries);
-                $('#metaConfigTable').find("tr").after(
-                    makeTableHTML( entries )
-                );
-                  
             </script>
-            
-            <p>Fill out feedback here...</p>
+
         </div>
 
 
