@@ -196,4 +196,6 @@ class DBConnection:
             questionType = row[2]
             questionName = row[3]
             feedbackQuestions.append([questionNumber, questionName, questionType])
+
+        return feedbackQuestions
         
