@@ -161,7 +161,8 @@ def createTemplate():
         # There is no link between "hello" and "Text"
         
         result = []
-        try:           
+        try:
+            templateName = request.form["templateName"]           
             form = request.form
             #result["txt"] = []
             #result["questionType"] = []
@@ -194,13 +195,21 @@ def createTemplate():
             today = date.today()
             bool, roomCode = db.createEvent(session["eventName"], session["feedbackFrequency"], session["user_id"], today , True) 
             #add feedback form to the database db.addFeedbackForm(...)
-            db.addTemplate(result, roomCode)
+            db.addTemplate(result, roomCode, templateName)
 
             return redirect(url_for("liveFeedback"))
         except Exception as e:
             print(e)
             print("You failed")
     return render_template("addqs.html")
+
+
+""" @app.route("/getTemplate", methods=["GET","POST"])
+def getTemplate():
+    global db
+    if request.method == "POST": """
+
+
 
 @app.route("/liveFeedback")
 def liveFeedback():

@@ -126,14 +126,15 @@ class DBConnection:
         return False
 
     # Fix bug tmr morning
-    def addTemplate(self, result, roomCode):
+    def addTemplate(self, result, roomCode, templateName):
 
         conn = self.createConnection(self.database)
-        addFeedbackForm = ("INSERT INTO FeedbackForm(eventID, overallSentiment) VALUES (?,?);")
+        #added templateName to differenciate in the drop down menu
+        addFeedbackForm = ("INSERT INTO FeedbackForm(templateName,eventID, overallSentiment) VALUES (?,?,?);")
         addQuestion = ("INSERT INTO Question(questionNumber, type, content, feedbackFormID) VALUES (?,?,?,?);")
         getFeedbackFormID = ("SELECT feedbackFormID FROM FeedbackForm WHERE eventID = ?")
 
-        conn.execute(addFeedbackForm, (roomCode, 0))
+        conn.execute(addFeedbackForm, (templateName, roomCode, 0))
         for row in conn.execute(getFeedbackFormID, (roomCode,)):
             feedBackID = row[0]
         questionNo = 1
