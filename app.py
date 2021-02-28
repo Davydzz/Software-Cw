@@ -74,6 +74,9 @@ def joinEvent():
 @app.route("/create", methods=["GET","POST"])
 def createEvent():
     global db
+    templateList = db.returnTemplates()
+    print(templateList)
+
     if request.method == "POST":
         session.pop("room_code",None) #remove room code if it is set
         eventName = request.form["eventName"]
@@ -97,7 +100,7 @@ def createEvent():
             pass
 
 
-    return render_template("create_event.html")
+    return render_template("create_event.html", list = templateList)
 
 @app.route('/login', methods=["GET","POST"])
 def login():

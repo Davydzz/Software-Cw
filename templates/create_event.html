@@ -18,8 +18,13 @@
 
                 <label class="labelLogin">Template: </label>
                 <select name="template"><br><br>
-                    <option value="Template1">Template1</option><br><br>
-                    <option value="Template2">Template2</option><br><br>
+
+                    <ul>
+                        {% for n in list %}
+                        <li><option value={{n}}> {{n}}</option></li>
+                        {% endfor %}
+                    </ul>
+                    
                     <option value="Create">Create your Own Template</option><br>
                 </select><br><br>
 

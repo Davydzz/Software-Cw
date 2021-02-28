@@ -150,3 +150,20 @@ class DBConnection:
             print(e)
             print("Template creation failure")
             return False
+    
+    def returnTemplates(self):
+
+        conn = self.createConnection(self.database)
+        cur = conn.cursor()
+        listTemplates = []
+        getAllTemplates = ("SELECT templateName from FeedbackForm")
+        cur.execute(getAllTemplates)
+        rows = cur.fetchall()
+        #cur.fetchAll returns a list of tuples, since they're all one element
+        #tuples, we convert it into a normal list
+        
+        for elem in rows:
+            listTemplates.append(elem[0])
+
+        #print(rows)
+        return listTemplates
