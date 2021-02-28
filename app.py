@@ -3,8 +3,11 @@ from flask import Flask, flash, redirect, render_template, request, session, abo
 import os
 from user import User
 
+import sys
+
 import sqlite3
 from dbConnection import DBConnection
+import json
 
 from datetime import date
 
@@ -47,9 +50,44 @@ def profile():
         return redirect(url_for("login"))
     return render_template("create_or_join.html")
 
-@app.route("/attendee")
-def attendee():
+@app.route("/attendee/<fromTemplate>", methods=["GET","POST"])
+#if not from template, then carry on as usual otherwise retrieve qs from db
+def attendee(fromTemplate):
     #get what the feedback form looks like
+    global db
+    feedbackQuestions = db.getFeedbackFormDetails(session["room_code"]) if fromTemplate == " " else db.getFeedbackTemplate(fromTemplate)
+    print(feedbackQuestions)
+
+    g.jdump = json.dumps(feedbackQuestions)
+
+    if request.method == "POST":
+        print("POST")
+        #add that to the database!
+        result = []
+        try:
+            anonymous = request.form["anonymous"] #will be a string, either "True" for anonymous or "False" for not anonymous            
+            form = request.form
+
+            for key in form.keys():
+                for value in form.getlist(key):
+                    if key == "starRating":
+                        if value == "":
+                            raise Exception
+                        else:
+                            result.append(value)
+                    elif key == "text":
+                        if value == "":
+                            raise Exception
+                        else:
+                            result.append(value)
+                            
+            print(anonymous) 
+            print(result)
+
+        except Exception as e:
+            print(e)
+            print("You failed")
+
     return render_template("deliver_feedback.html")
 
 @app.route("/join", methods=["GET", "POST"])
@@ -64,7 +102,7 @@ def joinEvent():
         if db.joinEvent(roomCode, userID):
             #redirect to deliver feedback page
             session["room_code"] = roomCode
-            return redirect(url_for("attendee"))
+            return redirect(url_for("attendee", fromTemplate = " "))
 
 
     return render_template("join.html")
@@ -72,6 +110,9 @@ def joinEvent():
 @app.route("/create", methods=["GET","POST"])
 def createEvent():
     global db
+    templateList = db.returnTemplates()
+    print(templateList)
+
     if request.method == "POST":
         session.pop("room_code",None) #remove room code if it is set
         eventName = request.form["eventName"]
@@ -92,10 +133,10 @@ def createEvent():
         if template == "Create":
             return redirect(url_for("createTemplate"))
         else:
-            pass
+            return redirect(url_for("attendee", fromTemplate = template))
 
 
-    return render_template("create_event.html")
+    return render_template("create_event.html", list = templateList)
 
 @app.route('/login', methods=["GET","POST"])
 def login():
@@ -159,7 +200,8 @@ def createTemplate():
         # There is no link between "hello" and "Text"
         
         result = []
-        try:           
+        try:
+            templateName = request.form["templateName"]           
             form = request.form
             #result["txt"] = []
             #result["questionType"] = []
@@ -191,14 +233,23 @@ def createTemplate():
             #add event to database
             today = date.today()
             bool, roomCode = db.createEvent(session["eventName"], session["feedbackFrequency"], session["user_id"], today , True) 
+            session["room_code"] = roomCode
             #add feedback form to the database db.addFeedbackForm(...)
-            db.addTemplate(result, roomCode)
+            db.addTemplate(result, roomCode, templateName)
 
             return redirect(url_for("liveFeedback"))
         except Exception as e:
             print(e)
             print("You failed")
     return render_template("addqs.html")
+
+
+""" @app.route("/getTemplate", methods=["GET","POST"])
+def getTemplate():
+    global db
+    if request.method == "POST": """
+
+
 
 @app.route("/liveFeedback")
 def liveFeedback():

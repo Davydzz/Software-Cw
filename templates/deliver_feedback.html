@@ -6,15 +6,105 @@
 
     </head>
 
+    <!-- https://stackoverflow.com/questions/17001961/how-to-add-drop-down-list-select-programmatically star rating drop down 28/02/2021 -->
+
+    <script>
+        function createTable(tableData) {
+            var table = document.getElementById('thisTable');
+
+            var tablediv = document.getElementById('tablediv');
+
+            var form = document.getElementById('feedbackform');
+
+            
+            var tableBody = document.createElement('tbody');
+
+            tableData.forEach(function(rowData) {
+                var row = document.createElement('tr');
+                for(var i=0; i<3; i++) {
+                    var cellData = rowData[i];
+                    if (i == 2) {
+                        switch(cellData) {
+                            case "Star Rating":
+                                var cell = document.createElement('td');
+                                var sel = document.createElement('select');
+                                sel.name = "starRating"
+                                var values = [
+                                    "",
+                                    "1",
+                                    "2",
+                                    "3",
+                                    "4",
+                                    "5"
+                                    ];
+                                var options = values.map(value => { return `<option value="${value}">${value}</option>)` });
+                                sel.innerHTML = options;
+                                cell.appendChild(sel);  
+                                break;
+                            case "Text":
+                                var cell = document.createElement('td');
+                                var textbox = document.createElement('input');
+                                textbox.name="text"
+                                cell.appendChild(textbox); 
+                        }
+                    } else {
+                        var cell = document.createElement('td');
+                        cell.appendChild(document.createTextNode(cellData));
+                    }     
+                    row.appendChild(cell);    
+                }
+                tableBody.appendChild(row);
+            });
+        
+            table.appendChild(tableBody);
+            form.appendChild(table);
+            tablediv.appendChild(form);
+            
+            
+            }
+    </script>
+
+
+    <!-- https://stackoverflow.com/questions/15164655/generate-html-table-from-2d-javascript-array -->
+    <!-- https://stackoverflow.com/questions/61472018/how-do-i-convert-pythonflask-list-of-objects-to-js-list-of-objects -->
     <body>
         <div class="box"><h1>Feedback System</h1></div>
         <br>
 
-        <div class="screenbox">
-            <p>Fill out feedback here...</p>
+        <div class="screenbox" id="tablediv" width="600px">
+            <h1>{{g.room_code}}</h1>
+          
+            <!-- <p>{{g.feedbackQuestions}}</p> -->
+
+            <form action="" method="post" id="feedbackform">
+                <table id="thisTable" name="thisTable" width="350px">
+                    <caption>Feedback Form</caption>
+                    <tr>
+                        <th></th>
+                        <th>Question</th>
+                        <th>Feedback</th>
+                    </tr>
+                </table>
+                <br>
+
+                <label>Anonymous</label> 
+                <select name="anonymous">
+                    <option value="False">Feedback is NOT Anonymous</option>
+                    <option value="True">Feedback is Anonymous</option>
+                </select>
+            
+                <input type="submit" value="Submit" />
+            </form>
+
+            <script>
+                var entries = JSON.parse('{{ g.jdump|safe }}');
+
+                createTable(entries);
+                console.log(entries);
+            </script>
+
         </div>
 
-    <div id="like_button_container"></div>
 
     <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>

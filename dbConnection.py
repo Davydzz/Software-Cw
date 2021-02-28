@@ -116,40 +116,86 @@ class DBConnection:
 
         if roomCodeExists:
             if userID != None:
-                #then add userID to event_members
-                addUserToEventsStatement = ("INSERT INTO event_members (roomcode, userID) VALUES ('%s', '%s')" % (roomCode, userID))
-                conn.execute(addUserToEventsStatement)
-                conn.commit()
+                try:
+                    #then add userID to event_members
+                    addUserToEventsStatement = ("INSERT INTO event_members (roomcode, userID) VALUES ('%s', '%s')" % (roomCode, userID))
+                    conn.execute(addUserToEventsStatement)
+                    conn.commit()
+                except:
+                    print("You are already in the room")
             return True
 
         print("Room code doesn't exist")
         return False
 
     # Fix bug tmr morning
-    def addTemplate(self, result, roomCode):
+    def addTemplate(self, result, roomCode, templateName):
 
-        
         conn = self.createConnection(self.database)
-        addFeedbackForm = ("INSERT INTO FeedBackForm(eventID, overallSentiment) VALUES ?,?")
-        addQuestion = ("INSERT INTO Question values (questionNumber, type, content, feedbackFormID) VALUES ?,?,?,?")
-        getFeebackFormID = ("SELECT feedbackFormID FROM FeedbackForm WHERE eventID = ?")
+        #added templateName to differenciate in the drop down menu
+        addFeedbackForm = ("INSERT INTO FeedbackForm(templateName,eventID, overallSentiment) VALUES (?,?,?);")
+        addQuestion = ("INSERT INTO Question(questionNumber, type, content, feedbackFormID) VALUES (?,?,?,?);")
+        getFeedbackFormID = ("SELECT feedbackFormID FROM FeedbackForm WHERE eventID = ?")
 
-        conn.execute(addFeedbackForm, (roomCode, 0))
-        feedBackID = conn.execute(getFeebackFormID, roomCode)
+        conn.execute(addFeedbackForm, (templateName, roomCode, 0))
+        for row in conn.execute(getFeedbackFormID, (roomCode,)):
+            feedBackID = row[0]
         questionNo = 1
-
+        
         try:
             for elem in result:
-
-                conn.execute(addQuestion,(questionNo, elem[1], elem[0],feedBackID))
+                conn.execute(addQuestion,(questionNo, elem[1], elem[0],feedBackID)) #it dies on this line
                 questionNo +=1
             
             conn.commit()
             return True
         except Exception as e:
-
+            print(e)
             print("Template creation failure")
             return False
+    
+    def returnTemplates(self):
+
+        conn = self.createConnection(self.database)
+        cur = conn.cursor()
+        listTemplates = []
+        getAllTemplates = ("SELECT templateName from FeedbackForm")
+        cur.execute(getAllTemplates)
+        rows = cur.fetchall()
+        #cur.fetchAll returns a list of tuples, since they're all one element
+        #tuples, we convert it into a normal list
         
-        #for i in result:
-            
+        for elem in rows:
+            listTemplates.append(elem[0])
+
+        #print(rows)
+        return listTemplates
+
+    def getFeedbackFormDetails(self, eventID):
+        #get feedback form for this event ID
+        #get all questions where feedback ID is NULL and feedback form ID matches
+        #return these questions
+        conn = self.createConnection(self.database)
+        getQuestionsStatement = ("SELECT * FROM Question INNER JOIN FeedbackForm ON Question.feedbackFormID = FeedbackForm.feedbackFormID WHERE FeedbackForm.EventID = '%s';" % eventID)
+        feedbackQuestions = []
+        for row in conn.execute(getQuestionsStatement):
+            questionNumber = row[1]
+            questionType = row[2]
+            questionName = row[3]
+            feedbackQuestions.append([questionNumber, questionName, questionType])
+        
+        return feedbackQuestions
+
+    def getFeedbackTemplate(self, templateName):
+
+        conn = self.createConnection(self.database)
+        getQuestionsStatement = ("SELECT * FROM Question WHERE feedbackFormID = (SELECT feedbackFormID from feedbackform WHERE templateName = '%s');" % templateName)
+        feedbackQuestions = []
+        for row in conn.execute(getQuestionsStatement):
+            questionNumber = row[1]
+            questionType = row[2]
+            questionName = row[3]
+            feedbackQuestions.append([questionNumber, questionName, questionType])
+
+        return feedbackQuestions
+        
