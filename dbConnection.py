@@ -185,3 +185,15 @@ class DBConnection:
             feedbackQuestions.append([questionNumber, questionName, questionType])
         
         return feedbackQuestions
+
+    def getFeedbackTemplate(self, templateName):
+
+        conn = self.createConnection(self.database)
+        getQuestionsStatement = ("SELECT * FROM Question WHERE feedbackFormID = (SELECT feedbackFormID from feedbackform WHERE templateName = '%s');" % templateName)
+        feedbackQuestions = []
+        for row in conn.execute(getQuestionsStatement):
+            questionNumber = row[1]
+            questionType = row[2]
+            questionName = row[3]
+            feedbackQuestions.append([questionNumber, questionName, questionType])
+        

@@ -50,11 +50,12 @@ def profile():
         return redirect(url_for("login"))
     return render_template("create_or_join.html")
 
-@app.route("/attendee", methods=["GET","POST"])
-def attendee():
+@app.route("/attendee/<fromTemplate>", methods=["GET","POST"])
+#if not from template, then carry on as usual otherwise retrieve qs from db
+def attendee(fromTemplate):
     #get what the feedback form looks like
     global db
-    feedbackQuestions = db.getFeedbackFormDetails(session["room_code"])
+    feedbackQuestions = db.getFeedbackFormDetails(session["room_code"]) if fromTemplate == " " else db.getFeedbackTemplate(fromTemplate)
     print(feedbackQuestions)
 
     g.jdump = json.dumps(feedbackQuestions)
@@ -101,7 +102,7 @@ def joinEvent():
         if db.joinEvent(roomCode, userID):
             #redirect to deliver feedback page
             session["room_code"] = roomCode
-            return redirect(url_for("attendee"))
+            return redirect(url_for("attendee", fromTemplate = " "))
 
 
     return render_template("join.html")
@@ -132,7 +133,7 @@ def createEvent():
         if template == "Create":
             return redirect(url_for("createTemplate"))
         else:
-            pass
+            return redirect(url_for("attendee", fromTemplate = template))
 
 
     return render_template("create_event.html", list = templateList)
