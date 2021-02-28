@@ -7,6 +7,7 @@ import sys
 
 import sqlite3
 from dbConnection import DBConnection
+import json
 
 from datetime import date
 
@@ -52,6 +53,12 @@ def profile():
 @app.route("/attendee")
 def attendee():
     #get what the feedback form looks like
+    global db
+    feedbackQuestions = db.getFeedbackFormDetails(session["room_code"])
+    print(feedbackQuestions)
+
+    g.jdump = json.dumps(feedbackQuestions)
+    #feedbackQuestions = json.dumps(jobj)
     return render_template("deliver_feedback.html")
 
 @app.route("/join", methods=["GET", "POST"])
@@ -197,6 +204,7 @@ def createTemplate():
             #add event to database
             today = date.today()
             bool, roomCode = db.createEvent(session["eventName"], session["feedbackFrequency"], session["user_id"], today , True) 
+            session["room_code"] = roomCode
             #add feedback form to the database db.addFeedbackForm(...)
             db.addTemplate(result, roomCode, templateName)
 

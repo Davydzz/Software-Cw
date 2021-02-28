@@ -116,10 +116,13 @@ class DBConnection:
 
         if roomCodeExists:
             if userID != None:
-                #then add userID to event_members
-                addUserToEventsStatement = ("INSERT INTO event_members (roomcode, userID) VALUES ('%s', '%s')" % (roomCode, userID))
-                conn.execute(addUserToEventsStatement)
-                conn.commit()
+                try:
+                    #then add userID to event_members
+                    addUserToEventsStatement = ("INSERT INTO event_members (roomcode, userID) VALUES ('%s', '%s')" % (roomCode, userID))
+                    conn.execute(addUserToEventsStatement)
+                    conn.commit()
+                except:
+                    print("You are already in the room")
             return True
 
         print("Room code doesn't exist")
@@ -167,3 +170,18 @@ class DBConnection:
 
         #print(rows)
         return listTemplates
+
+    def getFeedbackFormDetails(self, eventID):
+        #get feedback form for this event ID
+        #get all questions where feedback ID is NULL and feedback form ID matches
+        #return these questions
+        conn = self.createConnection(self.database)
+        getQuestionsStatement = ("SELECT * FROM Question INNER JOIN FeedbackForm ON Question.feedbackFormID = FeedbackForm.feedbackFormID WHERE FeedbackForm.EventID = '%s';" % eventID)
+        feedbackQuestions = []
+        for row in conn.execute(getQuestionsStatement):
+            questionNumber = row[1]
+            questionType = row[2]
+            questionName = row[3]
+            feedbackQuestions.append([questionNumber, questionName, questionType])
+        
+        return feedbackQuestions

@@ -5,16 +5,54 @@
         <link rel="stylesheet" href="{{ url_for('static',filename='styles/main.css') }}" type="text/css">
 
     </head>
+    <script src="{{ url_for('static', filename='js/jquery-3.4.1.min.js') }}"></script>
+    <script>
+    function makeTableHTML(a){ 
+    // takes (key, value) pairs from and array and returns
+    // corresponding html, i.e. [ [1,2], [3,4], [5,6] ] 
+      return [
+        "<tr>\n<th>",
+        a.map(function (e, i) {
+          return e.join("</th>\n<td>")
+        }).join("</td></tr>\n<tr>\n<th>"),
+        "</td>\n</tr>\n"
+      ].join("")
+    }
+    </script>
 
+
+    <!-- https://stackoverflow.com/questions/15164655/generate-html-table-from-2d-javascript-array -->
+    <!-- https://stackoverflow.com/questions/61472018/how-do-i-convert-pythonflask-list-of-objects-to-js-list-of-objects -->
     <body>
         <div class="box"><h1>Feedback System</h1></div>
         <br>
 
         <div class="screenbox">
+            <h1>{{g.room_code}}</h1>
+          
+            <!-- <p>{{g.feedbackQuestions}}</p> -->
+
+            <table id="metaConfigTable">
+                <caption>This is your target table</caption>
+                <tr>
+                    <th>Key</th>
+                    <th>Value</th>
+                </tr>
+            </table>
+
+            <script>
+
+                var entries = JSON.parse('{{ g.jdump|safe }}');
+                console.log(entries);
+                $('#metaConfigTable').find("tr").after(
+                    makeTableHTML( entries )
+                );
+                  
+            </script>
+            
             <p>Fill out feedback here...</p>
         </div>
 
-    <div id="like_button_container"></div>
 
     <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
