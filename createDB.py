@@ -92,6 +92,21 @@ def main():
                                     feedbackFormID int,
                                     FOREIGN KEY(feedbackFormID) REFERENCES FeedbackForm(feedbackFormID)
                                 );"""
+    
+    feedbackQuestions = """CREATE TABLE feedbackQuestions (
+                                    questionID int,
+                                    feedbackID int,
+                                    PRIMARY KEY (questionID, feedbackID),
+                                    FOREIGN KEY (questionID) REFERENCES Question(questionID)
+                                    ON DELETE CASCADE ON UPDATE CASCADE,
+                                    FOREIGN KEY (feedbackID) REFERENCES feedback(feedbackID)
+                                    ON DELETE CASCADE
+
+
+    );
+    
+    
+    """
 
 
     conn = create_connection(database)

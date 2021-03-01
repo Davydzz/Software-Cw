@@ -97,7 +97,6 @@ class DBConnection:
             existingEventStatement = ("SELECT * FROM events WHERE roomcode = '%s'" % roomcode)
             for row in conn.execute(existingEventStatement):
                 validCode = False
-
         if conn is not None:
             insertStatement = ("INSERT INTO events (roomcode, eventName, feedbackFrequency, hostUserID, date, active) VALUES ('%s', '%s', '%s', '%s', '%s', '%s')" % (roomcode, eventName, feedbackFrequency, hostUserID, date, active))
             conn.execute(insertStatement)
