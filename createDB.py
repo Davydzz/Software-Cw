@@ -118,6 +118,7 @@ def main():
         conn.execute('''DROP TABLE feedback''')
         conn.execute('''DROP TABLE FeedbackForm''')
         conn.execute('''DROP TABLE Question''')
+        conn.execute('''DROP TABLE feedbackQuestions''')
     except:
         pass
 
@@ -137,6 +138,8 @@ def main():
         create_table(conn, feedback_form)
 
         create_table(conn, questions)
+
+        create_table(conn, feedbackQuestions)
 
         #This is needed for the foreign keys to work
         conn.execute("PRAGMA foreign_keys = ON")
