@@ -98,7 +98,7 @@ def main():
                                     feedbackID int,
                                     PRIMARY KEY (questionID, feedbackID),
                                     FOREIGN KEY (questionID) REFERENCES Question(questionID)
-                                    ON DELETE CASCADE ON UPDATE CASCADE,
+                                    ON DELETE CASCADE,
                                     FOREIGN KEY (feedbackID) REFERENCES feedback(feedbackID)
                                     ON DELETE CASCADE
 
