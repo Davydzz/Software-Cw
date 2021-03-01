@@ -93,6 +93,8 @@ def main():
                                     FOREIGN KEY(feedbackFormID) REFERENCES FeedbackForm(feedbackFormID)
                                 );"""
     
+    # Instead of creating a separate column for the stars, we could convert the stars into a string equivalent
+    # This could simplify the code for the future
     feedbackQuestions = """CREATE TABLE feedbackQuestions (
                                     questionID int,
                                     feedbackID int,
