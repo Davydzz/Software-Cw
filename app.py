@@ -160,7 +160,7 @@ def register():
     
     if request.method == "POST":
         session.pop("user_id",None) #remove user ID if it is set
-        username = request.form["username"]
+        #username = request.form["username"]
         firstName = request.form["firstName"]
         lastName = request.form["lastName"]
         email = request.form["email"]
@@ -244,10 +244,7 @@ def createTemplate():
     return render_template("addqs.html")
 
 
-""" @app.route("/getTemplate", methods=["GET","POST"])
-def getTemplate():
-    global db
-    if request.method == "POST": """
+
 
 
 

@@ -92,6 +92,24 @@ def main():
                                     feedbackFormID int,
                                     FOREIGN KEY(feedbackFormID) REFERENCES FeedbackForm(feedbackFormID)
                                 );"""
+    
+    # Instead of creating a separate column for the stars, we could convert the stars into a string equivalent
+    # This could simplify the code for the future
+    feedbackQuestions = """CREATE TABLE feedbackQuestions (
+                                    questionID int,
+                                    feedbackID int,
+                                    answer text NOT NULL,
+                                    PRIMARY KEY (questionID, feedbackID),
+                                    FOREIGN KEY (questionID) REFERENCES Question(questionID)
+                                    ON DELETE CASCADE,
+                                    FOREIGN KEY (feedbackID) REFERENCES feedback(feedbackID)
+                                    ON DELETE CASCADE
+
+
+    );
+    
+    
+    """
 
 
     conn = create_connection(database)
@@ -103,6 +121,7 @@ def main():
         conn.execute('''DROP TABLE feedback''')
         conn.execute('''DROP TABLE FeedbackForm''')
         conn.execute('''DROP TABLE Question''')
+        conn.execute('''DROP TABLE feedbackQuestions''')
     except:
         pass
 
@@ -122,6 +141,8 @@ def main():
         create_table(conn, feedback_form)
 
         create_table(conn, questions)
+
+        create_table(conn, feedbackQuestions)
 
         #This is needed for the foreign keys to work
         conn.execute("PRAGMA foreign_keys = ON")

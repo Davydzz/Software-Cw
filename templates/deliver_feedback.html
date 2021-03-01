@@ -57,9 +57,10 @@
             });
         
             table.appendChild(tableBody);
-            form.appendChild(table);
-            tablediv.appendChild(form);
             
+            form.insertBefore(table, form.firstChild);
+
+            tablediv.appendChild(form);
             
             }
     </script>
@@ -68,15 +69,13 @@
     <!-- https://stackoverflow.com/questions/15164655/generate-html-table-from-2d-javascript-array -->
     <!-- https://stackoverflow.com/questions/61472018/how-do-i-convert-pythonflask-list-of-objects-to-js-list-of-objects -->
     <body>
-        <div class="box"><h1>Feedback System</h1></div>
+        <div class="box header"><h2>Feedback System</h2></div>
         <br>
 
         <div class="screenbox" id="tablediv" width="600px">
             <h1>{{g.room_code}}</h1>
           
-            <!-- <p>{{g.feedbackQuestions}}</p> -->
-
-            <form action="" method="post" id="feedbackform">
+            <form action="" method="post" id="feedbackform" class="form">
                 <table id="thisTable" name="thisTable" width="350px">
                     <caption>Feedback Form</caption>
                     <tr>
@@ -92,8 +91,8 @@
                     <option value="False">Feedback is NOT Anonymous</option>
                     <option value="True">Feedback is Anonymous</option>
                 </select>
-            
-                <input type="submit" value="Submit" />
+                <br>
+                <input type="submit" value="Submit" class="button" />
             </form>
 
             <script>

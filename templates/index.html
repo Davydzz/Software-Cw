@@ -3,39 +3,37 @@
     <head>
         <title>Feedback System</title>
         <link rel="stylesheet" href="{{ url_for('static',filename='styles/main.css') }}" type="text/css">
+        <link href="https://fonts.googleapis.com/css2?family=Newsreader:wght@200&display=swap" rel="stylesheet">
 
     </head>
 
     <body>
-        <div class="box"><h1>Feedback System</h1></div>
+        <div class="box header"><h2>Feedback System</h2></div>
         <br>
 
+
         <div class="screenbox">
-            <br>
-            <br>
 
-            <form action="login" class = "centrecontent">
-                <input type="submit" value="Login" style="font-size:35px" class="centreButton">
+            <h1>
+                Main Page
+            </h1>
+
+            <form action="login" class = "form">
+                <input type="submit" value="Login" style="font-size:35px" class="button">
             </form>
 
-            <br>
-            <br>
-
-            <form action="register" class = "centrecontent">
-                <input type="submit" value="Register" style="font-size:35px" width="50cm" class="centreButton">
+            <form action="register" class = "form">
+                <input type="submit" value="Register" style="font-size:35px" width="50cm" class="button">
             </form>
 
-            <br>
-            <br>
-
-            <form action="join" class = "centrecontent">
-                <input type="submit" value="Continue as Guest" style="font-size:35px" class="centreButton">
+            <form action="join" class = "form">
+                <input type="submit" value="Continue as Guest" style="font-size:35px" class="button">
             </form>
 
         </div>
 
-    <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
-    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
+        <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
+        <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
     </body>
 
 </html>

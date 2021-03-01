@@ -97,7 +97,6 @@ class DBConnection:
             existingEventStatement = ("SELECT * FROM events WHERE roomcode = '%s'" % roomcode)
             for row in conn.execute(existingEventStatement):
                 validCode = False
-
         if conn is not None:
             insertStatement = ("INSERT INTO events (roomcode, eventName, feedbackFrequency, hostUserID, date, active) VALUES ('%s', '%s', '%s', '%s', '%s', '%s')" % (roomcode, eventName, feedbackFrequency, hostUserID, date, active))
             conn.execute(insertStatement)
@@ -198,4 +197,22 @@ class DBConnection:
             feedbackQuestions.append([questionNumber, questionName, questionType])
 
         return feedbackQuestions
-        
+    
+
+    def getAnswers(self, feedbackID):
+
+        conn = self.createConnection(self.database)
+        getQuestionID = ("SELECT questionID from Question WHERE feedbackFormID = (SELECT feedbackFormID FROM feedback WHERE feedbackID= '%s');" %feedbackID)
+        getQuestions = ("SELECT content from Question WHERE questionID = ?")
+        getAnswers= ("SELECT answer from feedbackQuestions WHERE questionID =?")
+        questionAns = []
+
+
+        for elem in conn.execute(getQuestionID):
+            questionID = elem[0]
+            question = conn.execute(getQuestions, (questionID,))
+            answer = conn.execute(getAnswers, (questionID,))
+            questionAns.append([question, answer])
+
+        return questionAns
+
