@@ -244,10 +244,7 @@ def createTemplate():
     return render_template("addqs.html")
 
 
-""" @app.route("/getTemplate", methods=["GET","POST"])
-def getTemplate():
-    global db
-    if request.method == "POST": """
+
 
 
 

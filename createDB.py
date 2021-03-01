@@ -96,6 +96,7 @@ def main():
     feedbackQuestions = """CREATE TABLE feedbackQuestions (
                                     questionID int,
                                     feedbackID int,
+                                    answer text NOT NULL,
                                     PRIMARY KEY (questionID, feedbackID),
                                     FOREIGN KEY (questionID) REFERENCES Question(questionID)
                                     ON DELETE CASCADE,
