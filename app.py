@@ -9,7 +9,9 @@ import sqlite3
 from dbConnection import DBConnection
 import json
 
-from datetime import date
+import time
+
+from datetime import date, datetime
 
 #https://www.youtube.com/watch?v=2Zz97NVbH0U&ab_channel=PrettyPrinted
 #https://github.com/PrettyPrinted/youtube_video_code/tree/master/2020/02/10/Creating%20a%20Login%20Page%20in%20Flask%20Using%20Sessions/flask_session_example
@@ -55,7 +57,7 @@ def profile():
 def attendee(fromTemplate):
     #get what the feedback form looks like
     global db
-    feedbackQuestions = db.getFeedbackFormDetails(session["room_code"]) if fromTemplate == " " else db.getFeedbackTemplate(fromTemplate)
+    feedbackQuestions, feedbackFormID, questionIDs = db.getFeedbackFormDetails(session["room_code"]) if fromTemplate == " " else db.getFeedbackTemplate(fromTemplate)
     print(feedbackQuestions)
 
     g.jdump = json.dumps(feedbackQuestions)
@@ -81,8 +83,20 @@ def attendee(fromTemplate):
                         else:
                             result.append(value)
                             
-            print(anonymous) 
-            print(result)
+            if anonymous == "True":
+                anonymous = True
+            else:
+                anonymous = False
+
+            userID = None
+            if ("user_id" in session) and (anonymous == False):
+                userID = session["user_id"]
+            successful, feedbackID = db.addFeedback(userID, anonymous, datetime.now(), feedbackFormID, session["room_code"], 0) #0 is sentiment - change this!!
+
+            for i in range(len(questionIDs)):
+                questionID = questionIDs[i]
+                answer = result[i]
+                db.addFeedbackQuestion(questionID, feedbackID, answer)
 
         except Exception as e:
             print(e)

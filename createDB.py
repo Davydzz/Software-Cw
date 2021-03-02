@@ -64,7 +64,6 @@ def main():
                                     timestamp DATETIME,
                                     feedbackFormID int,
                                     roomcode int NOT NULL,
-                                    feedbackText text NOT NULL,
                                     sentiment int NOT NULL,
                                     FOREIGN KEY(feedbackFormID) REFERENCES FeedbackForm(feedbackFormID),
                                     FOREIGN KEY (userID) REFERENCES users(userID)

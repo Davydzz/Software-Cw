@@ -31,11 +31,14 @@ class DBConnection:
 
 
     #feedbackFormID refers to the feedback form that the feedback belongs to
-    def addFeedback(self, userID, anonymous, timestamp, feedbackFormID, roomcode, feedbackText, sentiment): #used for registration
+    def addFeedback(self, userID, anonymous, timestamp, feedbackFormID, roomcode, sentiment): 
         conn = self.createConnection(self.database)
 
         if conn is not None:
-            insertStatement = ("INSERT INTO feedback (userID, anonymous, timestamp, feedbackFormID, roomcode, feedbackText, sentiment) VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s')" % (userID, anonymous, timestamp, feedbackFormID, roomcode, feedbackText, sentiment))
+            if userID == None:
+                insertStatement = ("INSERT INTO feedback (anonymous, timestamp, feedbackFormID, roomcode, sentiment) VALUES ('%s', '%s', '%s', '%s', '%s')" % (anonymous, timestamp, feedbackFormID, roomcode, sentiment))
+            else:
+                insertStatement = ("INSERT INTO feedback (userID, anonymous, timestamp, feedbackFormID, roomcode, sentiment) VALUES ('%s', '%s', '%s', '%s', '%s', '%s')" % (userID, anonymous, timestamp, feedbackFormID, roomcode, sentiment))
             conn.execute(insertStatement)
             id = conn.execute('select last_insert_rowID();')
             id = id.fetchone()
@@ -43,6 +46,15 @@ class DBConnection:
             conn.commit()
             return True,id
 
+    def addFeedbackQuestion(self, questionID, feedbackID, answer):
+        conn = self.createConnection(self.database)
+        if conn is not None:
+            insertStatement =  ("INSERT INTO feedbackQuestions (questionID, feedbackID, answer) VALUES ('%s', '%s', '%s')" % (questionID, feedbackID, answer))
+            conn.execute(insertStatement)
+            conn.commit()
+            return True
+        return False
+        
     def createFeedbackForm(self, eventID, overallSentiment):
         conn = self.createConnection(self.database)
 
@@ -177,13 +189,16 @@ class DBConnection:
         conn = self.createConnection(self.database)
         getQuestionsStatement = ("SELECT * FROM Question INNER JOIN FeedbackForm ON Question.feedbackFormID = FeedbackForm.feedbackFormID WHERE FeedbackForm.EventID = '%s';" % eventID)
         feedbackQuestions = []
+        questionIDs = []
         for row in conn.execute(getQuestionsStatement):
+            questionIDs.append(row[0])
             questionNumber = row[1]
             questionType = row[2]
             questionName = row[3]
+            feedbackFormID = row[4]
             feedbackQuestions.append([questionNumber, questionName, questionType])
         
-        return feedbackQuestions
+        return feedbackQuestions, feedbackFormID, questionIDs
 
     def getFeedbackTemplate(self, templateName):
 
