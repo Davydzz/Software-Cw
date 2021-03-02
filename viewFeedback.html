@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<body>
+
+<h1>Rooname Feedback</h1>
+
+
+ <!--User picks what feedback they want displayed -->
+Feedback Type
+<form action="/action_page.php">
+  <input type="checkbox" id="checkbox1" name="checkbox1" value="overallFeedback">
+  <label for="checkbox1"> Overall Feedback</label><br>
+  <input type="checkbox" id="checkbox2" name="checkbox2" value="timePeriod">
+  <label for="checkbox2"> Feedback over last specified time period</label><br>
+</form>
+
+
+ <!-- User can select the time period from which they can see feedback -->
+<div style="border: 1px solid #000000;">
+
+Show feedback for the last
+<form action="/action.php">
+  <label for="hours">hours:</label><br>
+  <input type="text" id="hours" name="hours" value="hours"><br>
+  <label for="minutes">minutes:</label><br>
+  <input type="text" id="minutes" name="minutes" value="minutes"><br><br>
+  <input type="submit" value="Submit">
+</form>
+
+</div>
+
+
+ <!-- Pie charts displayed here -->
+<div style="width: 100%; display: table;">
+    <div style="display: table-row">
+        <div style="width: 600px; display: table-cell;", id="averageMood"> Left </div>
+        <div style="display: table-cell;", id="averageRating"> Right </div>
+    </div>
+</div>
+
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+
+<script type="text/javascript">
+// Load google charts
+google.charts.load('current', {'packages':['corechart']});
+google.charts.setOnLoadCallback(drawChart);
+
+
+// Draw the chart and set the chart values from the database
+function drawChart() {
+  var data = google.visualization.arrayToDataTable([
+  ['Rating', 'Frequency'],
+  ['1 Star', 8],
+  ['2 Star', 2],
+  ['3 Star', 4],
+  ['4 Star', 2],
+  ['5 Star', 10]
+]);
+
+  // Title and the width and height of the chart average rating taken from the database
+  var options = {'title':'Average Rating -------', 'width':550, 'height':400};
+
+  // Display the chart inside the <div> element with id="piechart"
+  var chart = new google.visualization.PieChart(document.getElementById('averageRating'));
+  chart.draw(data, options);
+}
+</script>
+
+<script type="text/javascript">
+// Load google charts
+google.charts.load('current', {'packages':['corechart']});
+google.charts.setOnLoadCallback(drawChart);
+
+
+// Draw the chart and set the chart values
+function drawChart() {
+  var data = google.visualization.arrayToDataTable([
+  ['Mood', 'Frequency'],
+  ['Positive', 8],
+  ['Neutral', 2],
+  ['Negative', 4]
+]);
+
+  // title and the width and height of the chart average mood displayed from database
+  var options = {'title':'Average Mood ------', 'width':550, 'height':400};
+
+
+
+  // Display the chart inside the <div> element with id="piechart"
+  var chart = new google.visualization.PieChart(document.getElementById('averageMood'));
+  chart.draw(data, options);
+}
+</script>
+
+</body>
+</html>
