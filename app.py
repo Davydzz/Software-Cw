@@ -17,12 +17,6 @@ from datetime import date, datetime
 #https://github.com/PrettyPrinted/youtube_video_code/tree/master/2020/02/10/Creating%20a%20Login%20Page%20in%20Flask%20Using%20Sessions/flask_session_example
 #16/02/2021
 
-#users = []
-#newUserID = 0
-#users.append(User(id=1, username='Anthony', password='password'))
-#users.append(User(id=2, username='Becca', password='secret'))
-#users.append(User(id=3, username='Carlos', password='somethingsimple')) #example
-
 app = Flask(__name__) #instantiate flask object
 app.secret_key = os.urandom(12)
 
@@ -45,11 +39,52 @@ def before_request():
 def home():
     return render_template("index.html")
 
-@app.route("/profile") #user logged in, they can now create or join an event
+@app.route("/profile", methods=["GET","POST"]) #user logged in, they can now create or join an event
 def profile():
+    global db
     if not g.user: #if not logged in
         #abort(403)
         return redirect(url_for("login"))
+    else:
+        #they are logged in, continue
+        hostRows, attendeeRows = db.getUserEvents(session["user_id"])
+
+        displayResults = []
+        for hostEvent in hostRows:
+            hostEvent.append("host")
+            displayResults.append(hostEvent)
+        for attendeeEvent in attendeeRows:
+            attendeeEvent.append("attendee")
+            displayResults.append(attendeeEvent)
+        print(displayResults)
+
+        g.jdump = json.dumps(displayResults)
+
+        if request.method == "POST":
+            print(request.form)
+
+            roomcode = request.form["joinButton"]
+
+            role = ""
+            for i in displayResults:
+                print(i[0],roomcode)
+                print(type(i[0]), type(roomcode))
+                if int(i[0]) == int(roomcode):
+                    print("this is true")
+                    role = i[2]
+                else:
+                    print("this is not true")
+
+            session["room_code"] = roomcode
+            if role == "attendee":   
+                return redirect(url_for("attendee", fromTemplate = " "))
+            elif role == "host":
+                return redirect(url_for("liveFeedback"))
+                
+            else:
+                print("something weird happened")
+                print(role)
+
     return render_template("create_or_join.html")
 
 @app.route("/attendee/<fromTemplate>", methods=["GET","POST"])
@@ -63,8 +98,6 @@ def attendee(fromTemplate):
     g.jdump = json.dumps(feedbackQuestions)
 
     if request.method == "POST":
-        print("POST")
-        #add that to the database!
         result = []
         try:
             anonymous = request.form["anonymous"] #will be a string, either "True" for anonymous or "False" for not anonymous            

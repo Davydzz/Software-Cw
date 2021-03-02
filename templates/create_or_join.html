@@ -6,15 +6,86 @@
         <link href="https://fonts.googleapis.com/css2?family=Newsreader:wght@200&display=swap" rel="stylesheet">
     </head>
 
+    <script>
+        function createTable(tableData) {
+            var table = document.getElementById('thisTable');
+
+            var tablediv = document.getElementById('tablediv');
+
+            var form = document.getElementById('eventform');
+
+            
+            var tableBody = document.createElement('tbody');
+
+            tableData.forEach(function(rowData) {
+                var row = document.createElement('tr');
+                for(var i=0; i<4; i++) {
+                    var cellData = rowData[i];
+                    if (i == 3) {
+                        var eventcode = rowData[0]
+                        var role = rowData[i-1]
+
+                        switch(role) {
+                            case "host":
+                                var cell = document.createElement('td');
+                                var button = document.createElement('button');
+                                button.name="joinButton";
+                                button.value = eventcode;
+                                cell.appendChild(button);  
+                                break;
+                            case "attendee":
+                                var cell = document.createElement('td');
+                                var button = document.createElement('button');
+                                button.name = "joinButton";
+                                button.value = eventcode;
+                                cell.appendChild(button);   
+                        }
+                        
+                        
+                    } else {
+                        var cell = document.createElement('td');
+                        cell.appendChild(document.createTextNode(cellData));
+                    }     
+                    row.appendChild(cell);    
+                }
+                tableBody.appendChild(row);
+            });
+        
+            table.appendChild(tableBody);
+            form.insertBefore(table, form.firstChild);
+            tablediv.appendChild(form);
+            
+            }
+    </script>
+
     <body>
         <div class="box header"><h2>Feedback System</h2></div>
         <br>
 
-        <div class="screenbox">
+        <div class="screenbox" id="tablediv" width="600px">
             <br>
             <br>
 
             <h1>{{g.user.username}}'s Profile</h1>
+
+            <form action="" method="post" id="eventform" class="">
+                <table id="thisTable" name="thisTable" width="400px">
+                    <caption></caption>
+                    <tr>
+                        <th>Event Code</th>
+                        <th>Event Name</th>
+                        <th>Role</th>
+                        <th></th>
+                    </tr>
+                </table>
+            </form>
+
+            <script>
+                var entries = JSON.parse('{{ g.jdump|safe }}');
+
+                createTable(entries);
+                console.log(entries);
+            </script>
 
             <form action="create" class = "centrecontent">
                 <input type="submit" value="Create Event" style="font-size:35px" class="button">

@@ -67,6 +67,25 @@ class DBConnection:
             conn.commit()
             return True,id
 
+    def getUserEvents(self, userID):
+        #return all events that the user is a host or an attendee of
+        conn = self.createConnection(self.database)
+        
+
+        if conn is not None:
+            hostStatement = ("SELECT roomcode, eventName FROM events WHERE hostUserID = '%s';" % userID)
+            attendeeStatement = ("SELECT events.roomcode, events.eventName FROM events INNER JOIN event_members ON events.roomcode = event_members.roomcode WHERE event_members.userID = '%s' AND events.active = 'True';" % userID)
+            
+            hostRows = []
+            attendeeRows = []
+            for row in conn.execute(hostStatement):
+                hostRows.append([row[0], row[1]])
+
+            for row in conn.execute(attendeeStatement):
+                attendeeRows.append([row[0], row[1]])
+            return hostRows, attendeeRows
+
+
     def confirmLogin(self, email, password):
         conn = self.createConnection(self.database)
         getSaltStatement = ("SELECT salt FROM users WHERE email = '%s';" % email)
