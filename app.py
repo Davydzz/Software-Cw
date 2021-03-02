@@ -63,17 +63,13 @@ def profile():
         if request.method == "POST":
             print(request.form)
 
-            roomcode = request.form["joinButton"]
+            chosenIndex = int(request.form["joinButton"])
 
-            role = ""
-            for i in displayResults:
-                print(i[0],roomcode)
-                print(type(i[0]), type(roomcode))
-                if int(i[0]) == int(roomcode):
-                    print("this is true")
-                    role = i[2]
-                else:
-                    print("this is not true")
+            print(chosenIndex)
+
+            result = displayResults[chosenIndex]
+            roomcode = result[0]
+            role = result[2]
 
             session["room_code"] = roomcode
             if role == "attendee":   

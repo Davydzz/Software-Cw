@@ -8,6 +8,7 @@
 
     <script>
         function createTable(tableData) {
+            
             var table = document.getElementById('thisTable');
 
             var tablediv = document.getElementById('tablediv');
@@ -17,7 +18,7 @@
             
             var tableBody = document.createElement('tbody');
 
-            tableData.forEach(function(rowData) {
+            tableData.forEach(function(rowData, index) {
                 var row = document.createElement('tr');
                 for(var i=0; i<4; i++) {
                     var cellData = rowData[i];
@@ -30,14 +31,14 @@
                                 var cell = document.createElement('td');
                                 var button = document.createElement('button');
                                 button.name="joinButton";
-                                button.value = eventcode;
+                                button.value = index;
                                 cell.appendChild(button);  
                                 break;
                             case "attendee":
                                 var cell = document.createElement('td');
                                 var button = document.createElement('button');
                                 button.name = "joinButton";
-                                button.value = eventcode;
+                                button.value = index;
                                 cell.appendChild(button);   
                         }
                         
@@ -84,7 +85,6 @@
                 var entries = JSON.parse('{{ g.jdump|safe }}');
 
                 createTable(entries);
-                console.log(entries);
             </script>
 
             <form action="create" class = "centrecontent">
