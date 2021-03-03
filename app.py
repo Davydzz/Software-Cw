@@ -180,7 +180,7 @@ def createEvent():
             today = date.today()
             bool, roomCode = db.createEvent(session["eventName"], session["feedbackFrequency"], session["user_id"], today , True) 
             session["room_code"] = roomCode
-            return redirect(url_for("liveFeedback", fromTemplate = template))
+            return redirect(url_for("liveFeedback", roomCode = session["room_code"]))
             #return redirect(url_for("attendee", fromTemplate = template))
 
 
@@ -285,7 +285,9 @@ def createTemplate():
             #add feedback form to the database db.addFeedbackForm(...)
             db.addTemplate(result, roomCode, name)
 
-            return redirect(url_for("liveFeedback", templateName = name))
+
+            roomcode = session["room_code"]
+            return redirect(url_for("liveFeedback", roomCode = roomcode))
         except Exception as e:
             print(e)
             print("You failed")
@@ -296,11 +298,11 @@ def createTemplate():
 
 
 
-@app.route("/liveFeedback/<fromTemplate>", methods=["GET","POST"])
-def liveFeedback(fromTemplate):
+@app.route("/liveFeedback/<roomCode>", methods=["GET","POST"])
+def liveFeedback(roomCode):
 
     global db
-    feedbackQuestions = db.getFeedbackTemplate(fromTemplate)
+    feedbackQuestions = db.getAnswers(roomCode)
     print(feedbackQuestions)
 
     g.qs = json.dumps(feedbackQuestions)

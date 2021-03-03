@@ -233,20 +233,20 @@ class DBConnection:
         return feedbackQuestions
     
 
-    def getAnswers(self, feedbackID):
+    def getAnswers(self, roomCode):
 
         conn = self.createConnection(self.database)
-        getQuestionID = ("SELECT questionID from Question WHERE feedbackFormID = (SELECT feedbackFormID FROM feedback WHERE feedbackID= '%s');" %feedbackID)
-        getQuestions = ("SELECT content from Question WHERE questionID = ?")
+        getQuestionID = ("SELECT questionID from Question WHERE feedbackFormID = (SELECT feedbackFormID FROM feedback WHERE roomcode= '%s');" %roomCode)
+        getQuestions = ("SELECT content,type from Question WHERE questionID = ?")
         getAnswers= ("SELECT answer from feedbackQuestions WHERE questionID =?")
         questionAns = []
 
 
         for elem in conn.execute(getQuestionID):
             questionID = elem[0]
-            question = conn.execute(getQuestions, (questionID,))
+            question, type = conn.execute(getQuestions, (questionID,))
             answer = conn.execute(getAnswers, (questionID,))
-            questionAns.append([question, answer])
+            questionAns.append([question,type, answer])
 
         return questionAns
 

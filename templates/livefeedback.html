@@ -1,114 +1,120 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <title>Deliver Feedback</title>
-        <link rel="stylesheet" href="{{ url_for('static',filename='styles/main.css') }}" type="text/css">
+  <head>
+    <title>Deliver Feedback</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static',filename='styles/main.css') }}"
+      type="text/css"
+    />
 
-        <!-- Font Awesome Icon Library -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-        <style>
-        .checked {
+    <!-- Font Awesome Icon Library -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <style>
+      .checked {
         color: orange;
+      }
+    </style>
+  </head>
+
+  <script>
+    function displayStars(numStars) {
+      var stars = document.getCreateElement("div");
+ 
+      for (var x = 0; x < 5; x++) {
+        var star = document.createElement("span");
+
+        if (x < numStars) {
+          star.className = "fa fa-star checked";
+        } else {
+          star.className = "fa fa-star";
         }
-</style>
-    </head>
 
-     <script>
-        function createTable(tableData) {
-            var table = document.getElementById('thisTable');
+        stars.appendChild(star);
+      }
 
-            var tablediv = document.getElementById('tablediv');
+      return stars;
+    }
 
-            var form = document.getElementById('feedbackform');
+    function createTable(tableData) {
+      var table = document.getElementById("thisTable");
+      var tablediv = document.getElementById("tablediv");
+      var form = document.getElementById("feedbackform");
+      var tableBody = document.createElement("tbody");
 
-            
-            var tableBody = document.createElement('tbody');
+      tableData.forEach(function (rowData) {
+        var row = document.createElement("tr");
+        for (var i = 0; i < 3; i++) {
+          var cellData = rowData[i];
+          if (i == 1) {
+            switch (cellData) {
+              case "Star Rating":
+                var cell = document.createElement("td");
+                var stars= displayStars(rowData[2]);
+                cell.appendChild(stars);
 
-            tableData.forEach(function(rowData) {
-                var row = document.createElement('tr');
-                for(var i=0; i<3; i++) {
-                    var cellData = rowData[i];
-                    if (i == 2) {
-                        switch(cellData) {
-                            case "Star Rating":
-                                var cell = document.createElement('td');
-                                var sel = document.createElement('select');
-                                sel.name = "starRating"
-                                var values = [
-                                    "",
-                                    "1",
-                                    "2",
-                                    "3",
-                                    "4",
-                                    "5"
-                                    ];
-                                var options = values.map(value => { return `<option value="${value}">${value}</option>)` });
-                                sel.innerHTML = options;
-                                cell.appendChild(sel);  
-                                break;
-                            case "Text":
-                                var cell = document.createElement('td');
-                                var textbox = document.createElement('input');
-                                textbox.name="text"
-                                cell.appendChild(textbox); 
-                        }
-                    } else {
-                        var cell = document.createElement('td');
-                        cell.appendChild(document.createTextNode(cellData));
-                    }     
-                    row.appendChild(cell);    
-                }
-                tableBody.appendChild(row);
-            });
-        
-            table.appendChild(tableBody);
-            
-            form.insertBefore(table, form.firstChild);
-
-            tablediv.appendChild(form);
-            
+                break;
+              case "Text":
+                var cell = document.createElement("td");
+                cell.appendChild(document.createTextNode(rowData[2]));
             }
-    </script>
+          } else {
+            var cell = document.createElement("td");
+            cell.appendChild(document.createTextNode(rowData[0]));
+          }
+          row.appendChild(cell);
+        }
+        tableBody.appendChild(row);
+      });
 
+      table.appendChild(tableBody);
 
-    <!-- https://stackoverflow.com/questions/15164655/generate-html-table-from-2d-javascript-array -->
-    <!-- https://stackoverflow.com/questions/61472018/how-do-i-convert-pythonflask-list-of-objects-to-js-list-of-objects -->
-    <body>
-        <div class="box header"><h2>Feedback System</h2></div>
-        <br>
+      form.insertBefore(table, form.firstChild);
 
-        <div class="screenbox" id="tablediv" width="600px">
-            <h1>{{g.room_code}}</h1>
-          
-                <br>
-                <table id="thisTable" name="thisTable" width="350px">
-                <caption>Feedback Form</caption>
-                    <tr>
-                        <th></th>
-                        <th>Question</th>
-                        <th>Feedback</th>
-                    </tr>
-                </table>
+      tablediv.appendChild(form);
+    }
+  </script>
 
+  <!-- https://stackoverflow.com/questions/15164655/generate-html-table-from-2d-javascript-array -->
+  <!-- https://stackoverflow.com/questions/61472018/how-do-i-convert-pythonflask-list-of-objects-to-js-list-of-objects -->
+  <body>
+    <div class="box header"><h2>Feedback System</h2></div>
+    <br />
 
-                <span class="fa fa-star checked"></span>
-                <span class="fa fa-star checked"></span>
-                <span class="fa fa-star checked"></span>
-                <span class="fa fa-star"></span>
-                <span class="fa fa-star"></span>
+    <div class="screenbox" id="tablediv" width="600px">
+      <h1>{{g.room_code}}</h1>
 
-            <script>
-                var entries = JSON.parse('{{ g.qs|safe }}');
+      <br />
+      <table id="thisTable" name="thisTable" width="350px">
+        <caption>
+          Feedback Form
+        </caption>
+        <tr>
+          <th></th>
+          <th>Question</th>
+          <th>Feedback</th>
 
-                createTable(entries);
-                console.log(entries);
-            </script>
+        </tr>
+      </table>
 
-        </div>
+      <script>
+        var entries = JSON.parse("{{ g.qs|safe }}");
 
+        createTable(entries);
+        console.log(entries);
+      </script>
+    </div>
 
-    <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
-    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
-    </body>
-
+    <script
+      src="https://unpkg.com/react@17/umd/react.development.js"
+      crossorigin
+    ></script>
+    <script
+      src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
+      crossorigin
+    ></script>
+  </body>
 </html>
