@@ -126,6 +126,9 @@ def attendee(fromTemplate):
             for i in range(len(questionIDs)):
                 questionID = questionIDs[i]
                 answer = result[i]
+                questionType = feedbackQuestions[i][2]
+                if questionType == "Star Rating":
+                    answer = len(answer)
                 db.addFeedbackQuestion(questionID, feedbackID, answer)
 
         except Exception as e:
