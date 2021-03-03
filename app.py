@@ -88,7 +88,8 @@ def profile():
 def attendee(fromTemplate):
     #get what the feedback form looks like
     global db
-    feedbackQuestions, feedbackFormID, questionIDs = db.getFeedbackFormDetails(session["room_code"]) if fromTemplate == " " else db.getFeedbackTemplate(fromTemplate)
+    feedbackQuestions, feedbackFormID, questionIDs = db.getFeedbackFormDetails(session["room_code"])
+    #feedbackQuestions, feedbackFormID, questionIDs = db.getFeedbackFormDetails(session["room_code"]) if fromTemplate == " " else db.getFeedbackTemplate(fromTemplate)
     print(feedbackQuestions)
 
     g.jdump = json.dumps(feedbackQuestions)
@@ -176,7 +177,11 @@ def createEvent():
         if template == "Create":
             return redirect(url_for("createTemplate"))
         else:
-            return redirect(url_for("attendee", fromTemplate = template))
+            today = date.today()
+            bool, roomCode = db.createEvent(session["eventName"], session["feedbackFrequency"], session["user_id"], today , True) 
+            session["room_code"] = roomCode
+            return redirect(url_for("liveFeedback", fromTemplate = template))
+            #return redirect(url_for("attendee", fromTemplate = template))
 
 
     return render_template("create_event.html", list = templateList)
@@ -244,7 +249,7 @@ def createTemplate():
         
         result = []
         try:
-            templateName = request.form["templateName"]           
+            name = request.form["templateName"]           
             form = request.form
             #result["txt"] = []
             #result["questionType"] = []
@@ -278,9 +283,9 @@ def createTemplate():
             bool, roomCode = db.createEvent(session["eventName"], session["feedbackFrequency"], session["user_id"], today , True) 
             session["room_code"] = roomCode
             #add feedback form to the database db.addFeedbackForm(...)
-            db.addTemplate(result, roomCode, templateName)
+            db.addTemplate(result, roomCode, name)
 
-            return redirect(url_for("liveFeedback"))
+            return redirect(url_for("liveFeedback", templateName = name))
         except Exception as e:
             print(e)
             print("You failed")
@@ -291,7 +296,17 @@ def createTemplate():
 
 
 
-@app.route("/liveFeedback")
-def liveFeedback():
+@app.route("/liveFeedback/<fromTemplate>", methods=["GET","POST"])
+def liveFeedback(fromTemplate):
+
+    global db
+    feedbackQuestions = db.getFeedbackTemplate(fromTemplate)
+    print(feedbackQuestions)
+
+    g.qs = json.dumps(feedbackQuestions)
+
+    #if request.method == "POST":
+        
+
     return render_template("livefeedback.html")
 
