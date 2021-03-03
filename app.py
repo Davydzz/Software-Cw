@@ -9,17 +9,13 @@ import sqlite3
 from dbConnection import DBConnection
 import json
 
-from datetime import date
+import time
+
+from datetime import date, datetime
 
 #https://www.youtube.com/watch?v=2Zz97NVbH0U&ab_channel=PrettyPrinted
 #https://github.com/PrettyPrinted/youtube_video_code/tree/master/2020/02/10/Creating%20a%20Login%20Page%20in%20Flask%20Using%20Sessions/flask_session_example
 #16/02/2021
-
-#users = []
-#newUserID = 0
-#users.append(User(id=1, username='Anthony', password='password'))
-#users.append(User(id=2, username='Becca', password='secret'))
-#users.append(User(id=3, username='Carlos', password='somethingsimple')) #example
 
 app = Flask(__name__) #instantiate flask object
 app.secret_key = os.urandom(12)
@@ -43,11 +39,48 @@ def before_request():
 def home():
     return render_template("index.html")
 
-@app.route("/profile") #user logged in, they can now create or join an event
+@app.route("/profile", methods=["GET","POST"]) #user logged in, they can now create or join an event
 def profile():
+    global db
     if not g.user: #if not logged in
         #abort(403)
         return redirect(url_for("login"))
+    else:
+        #they are logged in, continue
+        hostRows, attendeeRows = db.getUserEvents(session["user_id"])
+
+        displayResults = []
+        for hostEvent in hostRows:
+            hostEvent.append("host")
+            displayResults.append(hostEvent)
+        for attendeeEvent in attendeeRows:
+            attendeeEvent.append("attendee")
+            displayResults.append(attendeeEvent)
+        print(displayResults)
+
+        g.jdump = json.dumps(displayResults)
+
+        if request.method == "POST":
+            print(request.form)
+
+            chosenIndex = int(request.form["joinButton"])
+
+            print(chosenIndex)
+
+            result = displayResults[chosenIndex]
+            roomcode = result[0]
+            role = result[2]
+
+            session["room_code"] = roomcode
+            if role == "attendee":   
+                return redirect(url_for("attendee", fromTemplate = " "))
+            elif role == "host":
+                return redirect(url_for("liveFeedback"))
+                
+            else:
+                print("something weird happened")
+                print(role)
+
     return render_template("create_or_join.html")
 
 @app.route("/attendee/<fromTemplate>", methods=["GET","POST"])
@@ -55,14 +88,13 @@ def profile():
 def attendee(fromTemplate):
     #get what the feedback form looks like
     global db
-    feedbackQuestions = db.getFeedbackFormDetails(session["room_code"]) if fromTemplate == " " else db.getFeedbackTemplate(fromTemplate)
+    feedbackQuestions, feedbackFormID, questionIDs = db.getFeedbackFormDetails(session["room_code"])
+    #feedbackQuestions, feedbackFormID, questionIDs = db.getFeedbackFormDetails(session["room_code"]) if fromTemplate == " " else db.getFeedbackTemplate(fromTemplate)
     print(feedbackQuestions)
 
     g.jdump = json.dumps(feedbackQuestions)
 
     if request.method == "POST":
-        print("POST")
-        #add that to the database!
         result = []
         try:
             anonymous = request.form["anonymous"] #will be a string, either "True" for anonymous or "False" for not anonymous            
@@ -81,8 +113,20 @@ def attendee(fromTemplate):
                         else:
                             result.append(value)
                             
-            print(anonymous) 
-            print(result)
+            if anonymous == "True":
+                anonymous = True
+            else:
+                anonymous = False
+
+            userID = None
+            if ("user_id" in session) and (anonymous == False):
+                userID = session["user_id"]
+            successful, feedbackID = db.addFeedback(userID, anonymous, datetime.now(), feedbackFormID, session["room_code"], 0) #0 is sentiment - change this!!
+
+            for i in range(len(questionIDs)):
+                questionID = questionIDs[i]
+                answer = result[i]
+                db.addFeedbackQuestion(questionID, feedbackID, answer)
 
         except Exception as e:
             print(e)
@@ -133,7 +177,11 @@ def createEvent():
         if template == "Create":
             return redirect(url_for("createTemplate"))
         else:
-            return redirect(url_for("attendee", fromTemplate = template))
+            today = date.today()
+            bool, roomCode = db.createEvent(session["eventName"], session["feedbackFrequency"], session["user_id"], today , True) 
+            session["room_code"] = roomCode
+            return redirect(url_for("liveFeedback", roomCode = session["room_code"]))
+            #return redirect(url_for("attendee", fromTemplate = template))
 
 
     return render_template("create_event.html", list = templateList)
@@ -160,7 +208,7 @@ def register():
     
     if request.method == "POST":
         session.pop("user_id",None) #remove user ID if it is set
-        username = request.form["username"]
+        #username = request.form["username"]
         firstName = request.form["firstName"]
         lastName = request.form["lastName"]
         email = request.form["email"]
@@ -201,7 +249,7 @@ def createTemplate():
         
         result = []
         try:
-            templateName = request.form["templateName"]           
+            name = request.form["templateName"]           
             form = request.form
             #result["txt"] = []
             #result["questionType"] = []
@@ -235,9 +283,11 @@ def createTemplate():
             bool, roomCode = db.createEvent(session["eventName"], session["feedbackFrequency"], session["user_id"], today , True) 
             session["room_code"] = roomCode
             #add feedback form to the database db.addFeedbackForm(...)
-            db.addTemplate(result, roomCode, templateName)
+            db.addTemplate(result, roomCode, name)
 
-            return redirect(url_for("liveFeedback"))
+
+            roomcode = session["room_code"]
+            return redirect(url_for("liveFeedback", roomCode = roomcode))
         except Exception as e:
             print(e)
             print("You failed")
@@ -248,7 +298,17 @@ def createTemplate():
 
 
 
-@app.route("/liveFeedback")
-def liveFeedback():
+@app.route("/liveFeedback/<roomCode>", methods=["GET","POST"])
+def liveFeedback(roomCode):
+
+    global db
+    feedbackQuestions = db.getAnswers(roomCode)
+    print(feedbackQuestions)
+
+    g.qs = json.dumps(feedbackQuestions)
+
+    #if request.method == "POST":
+        
+
     return render_template("livefeedback.html")
 
