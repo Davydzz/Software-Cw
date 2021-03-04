@@ -23,7 +23,7 @@
   <script>
     function displayStars(numStars) {
       var stars = document.getCreateElement("div");
- 
+
       for (var x = 0; x < 5; x++) {
         var star = document.createElement("span");
 
@@ -47,13 +47,13 @@
 
       tableData.forEach(function (rowData) {
         var row = document.createElement("tr");
-        for (var i = 0; i < 3; i++) {
+        for (var i = 0; i < 4; i++) {
           var cellData = rowData[i];
           if (i == 1) {
             switch (cellData) {
               case "Star Rating":
                 var cell = document.createElement("td");
-                var stars= displayStars(rowData[2]);
+                var stars = displayStars(rowData[2]);
                 cell.appendChild(stars);
 
                 break;
@@ -63,7 +63,7 @@
             }
           } else {
             var cell = document.createElement("td");
-            cell.appendChild(document.createTextNode(rowData[0]));
+            cell.appendChild(document.createTextNode(cellData));
           }
           row.appendChild(cell);
         }
@@ -96,15 +96,14 @@
           <th></th>
           <th>Question</th>
           <th>Feedback</th>
-
         </tr>
       </table>
 
       <script>
-        var entries = JSON.parse("{{ g.qs|safe }}");
-
-        createTable(entries);
+        var entries = JSON.parse('{{ g.jdump|safe }}');
         console.log(entries);
+        createTable(entries);
+        //console.log(entries);
       </script>
     </div>
 

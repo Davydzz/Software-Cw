@@ -308,7 +308,7 @@ def liveFeedback(roomCode):
     feedbackQuestions = db.getAnswers(roomCode)
     print(feedbackQuestions)
 
-    g.qs = json.dumps(feedbackQuestions)
+    g.jdump = json.dumps(feedbackQuestions)
 
     #if request.method == "POST":
         

@@ -1,4 +1,8 @@
 import sqlite3
+import nltk
+nltk.download('vader_lexicon')
+from nltk.sentiment import SentimentIntensityAnalyzer
+obj = SentimentIntensityAnalyzer()
 
 class DBConnection:
     def __init__(self):
@@ -251,7 +255,17 @@ class DBConnection:
                 
                 for ans in conn.execute(getAnswers, (questionID,)):
                     answer = ans[0]
-                questionAns.append([question,type, answer])
+                    score = obj.polarity_scores(answer)
+                    final = score['compound']
+                questionAns.append([question,type, answer, final])
 
         return questionAns
 
+    def getSentimentScore(msgs, obj):
+
+        sentimentList = []
+        for user, msg in msgs:
+            score = obj.polarity_scores(msg)
+            sentimentList.append([user, score['compound']])
+
+        return sentimentList
