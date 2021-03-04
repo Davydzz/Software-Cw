@@ -244,9 +244,14 @@ class DBConnection:
 
         for elem in conn.execute(getQuestionID):
             questionID = elem[0]
-            question, type = conn.execute(getQuestions, (questionID,))
-            answer = conn.execute(getAnswers, (questionID,))
-            questionAns.append([question,type, answer])
+
+            for qs in conn.execute(getQuestions, (questionID,)):
+                question = qs[0]
+                type = qs[1]
+                
+                for ans in conn.execute(getAnswers, (questionID,)):
+                    answer = ans[0]
+                questionAns.append([question,type, answer])
 
         return questionAns
 
