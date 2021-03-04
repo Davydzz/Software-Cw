@@ -1,4 +1,5 @@
 import sqlite3
+import hashlib
 import nltk
 nltk.download('vader_lexicon')
 from nltk.sentiment import SentimentIntensityAnalyzer
@@ -99,7 +100,8 @@ class DBConnection:
             salt = row[0]
         if not saltFound:
             return False, None
-        hashedPassword = salt + password #todo: hash this
+        toHash = salt + password
+        hashedPassword = hashlib.sha256(bytes(toHash,"utf-8")).hexdigest()
         existingUserStatement = ("SELECT * FROM users WHERE email = '%s' AND password = '%s'" % (email, hashedPassword))
         for row in conn.execute(existingUserStatement):
             #password matches the email
