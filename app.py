@@ -73,9 +73,9 @@ def profile():
 
             session["room_code"] = roomcode
             if role == "attendee":   
-                return redirect(url_for("attendee", fromTemplate = " "))
+                return redirect(url_for("attendee"))
             elif role == "host":
-                return redirect(url_for("liveFeedback"))
+                return redirect(url_for("liveFeedback", roomCode = roomcode))
                 
             else:
                 print("something weird happened")
@@ -83,9 +83,9 @@ def profile():
 
     return render_template("create_or_join.html")
 
-@app.route("/attendee/<fromTemplate>", methods=["GET","POST"])
+@app.route("/attendee/", methods=["GET","POST"])
 #if not from template, then carry on as usual otherwise retrieve qs from db
-def attendee(fromTemplate):
+def attendee():
     #get what the feedback form looks like
     global db
     feedbackQuestions, feedbackFormID, questionIDs = db.getFeedbackFormDetails(session["room_code"])
@@ -149,7 +149,7 @@ def joinEvent():
         if db.joinEvent(roomCode, userID):
             #redirect to deliver feedback page
             session["room_code"] = roomCode
-            return redirect(url_for("attendee", fromTemplate = " "))
+            return redirect(url_for("attendee"))
 
 
     return render_template("join.html")
