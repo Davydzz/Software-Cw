@@ -256,9 +256,8 @@ class DBConnection:
         conn = self.createConnection(self.database)
         getQuestionID = ("SELECT questionID from Question WHERE feedbackFormID = (SELECT feedbackFormID FROM events WHERE roomcode= '%s');" %roomCode)
         getQuestions = ("SELECT content,type from Question WHERE questionID = ?")
-        getAnswers= ("SELECT answer from feedbackQuestions WHERE questionID =?")
+        getAnswers= ("SELECT answer from feedbackQuestions INNER JOIN feedback ON feedbackQuestions.feedbackID = feedback.feedbackID WHERE feedbackQuestions.questionID = ? AND feedback.roomcode = ?")
         questionAns = []
-
 
         for elem in conn.execute(getQuestionID):
             questionID = elem[0]
@@ -267,7 +266,7 @@ class DBConnection:
                 question = qs[0]
                 type = qs[1]
                 
-                for ans in conn.execute(getAnswers, (questionID,)):
+                for ans in conn.execute(getAnswers, (questionID, roomCode)):
                     answer = ans[0]
                     score = obj.polarity_scores(answer)
                     final = score['compound']
