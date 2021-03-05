@@ -185,7 +185,8 @@ def createEvent():
             return redirect(url_for("createTemplate"))
         else:
             today = date.today()
-            bool, roomCode = db.createEvent(session["eventName"], session["feedbackFrequency"], session["user_id"], today , True) 
+            feedbackFormID = db.getFeedbackFormID(template)
+            bool, roomCode = db.createEvent(session["eventName"], session["feedbackFrequency"], session["user_id"], today , True, feedbackFormID) 
             session["room_code"] = roomCode
             return redirect(url_for("liveFeedback", roomCode = session["room_code"]))
             #return redirect(url_for("attendee", fromTemplate = template))
@@ -288,10 +289,11 @@ def createTemplate():
 
             #add event to database
             today = date.today()
-            bool, roomCode = db.createEvent(session["eventName"], session["feedbackFrequency"], session["user_id"], today , True) 
+            feedbackFormID = db.addTemplate(result, name)
+            bool, roomCode = db.createEvent(session["eventName"], session["feedbackFrequency"], session["user_id"], today , True, feedbackFormID) 
             session["room_code"] = roomCode
             #add feedback form to the database db.addFeedbackForm(...)
-            db.addTemplate(result, roomCode, name)
+            
 
 
             roomcode = session["room_code"]

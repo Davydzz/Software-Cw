@@ -120,7 +120,14 @@ class DBConnection:
         for row in conn.execute(getUserStatement):
             return row
 
-    def createEvent(self, eventName, feedbackFrequency, hostUserID, date, active):
+
+    def getFeedbackFormID(self, templateName):
+        conn = self.createConnection(self.database)
+        getFeedbackFormID = "SELECT feedbackFormID FROM FeedbackForm WHERE templateName = ?"
+        for row in conn.execute(getFeedbackFormID,(templateName,)):
+            return row[0]
+
+    def createEvent(self, eventName, feedbackFrequency, hostUserID, date, active, feedbackFormID):
 
         #With 10,000 events the collision rate is just over 1%
         validCode = False
@@ -135,7 +142,7 @@ class DBConnection:
             for row in conn.execute(existingEventStatement):
                 validCode = False
         if conn is not None:
-            insertStatement = ("INSERT INTO events (roomcode, eventName, feedbackFrequency, hostUserID, date, active) VALUES ('%s', '%s', '%s', '%s', '%s', '%s')" % (roomcode, eventName, feedbackFrequency, hostUserID, date, active))
+            insertStatement = ("INSERT INTO events (roomcode, eventName, feedbackFrequency, hostUserID, date, active, feedbackFormID) VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s')" % (roomcode, eventName, feedbackFrequency, hostUserID, date, active, feedbackFormID))
             conn.execute(insertStatement)
             conn.commit()
             return True, roomcode
@@ -165,26 +172,31 @@ class DBConnection:
         return False
 
     # Fix bug tmr morning
-    def addTemplate(self, result, roomCode, templateName):
+    def addTemplate(self, result, templateName):
 
         conn = self.createConnection(self.database)
         #added templateName to differenciate in the drop down menu
-        addFeedbackForm = ("INSERT INTO FeedbackForm(templateName,eventID, overallSentiment) VALUES (?,?,?);")
+        addFeedbackForm = ("INSERT INTO FeedbackForm(templateName, overallSentiment) VALUES (?,?);")
+        
         addQuestion = ("INSERT INTO Question(questionNumber, type, content, feedbackFormID) VALUES (?,?,?,?);")
-        getFeedbackFormID = ("SELECT feedbackFormID FROM FeedbackForm WHERE eventID = ?")
+        #getFeedbackFormID = ("SELECT feedbackFormID FROM FeedbackForm WHERE eventID = ?")
 
-        conn.execute(addFeedbackForm, (templateName, roomCode, 0))
-        for row in conn.execute(getFeedbackFormID, (roomCode,)):
-            feedBackID = row[0]
+        feedbackID = -1
+        conn.execute(addFeedbackForm, (templateName, 0))
+        id = conn.execute('select last_insert_rowID();')
+        id = id.fetchone()
+        feedbackID = id[0]
+        # for row in conn.execute(getFeedbackFormID, (roomCode,)):
+        #     feedBackID = row[0]
         questionNo = 1
         
         try:
             for elem in result:
-                conn.execute(addQuestion,(questionNo, elem[1], elem[0],feedBackID)) #it dies on this line
+                conn.execute(addQuestion,(questionNo, elem[1], elem[0],feedbackID)) 
                 questionNo +=1
             
             conn.commit()
-            return True
+            return feedbackID
         except Exception as e:
             print(e)
             print("Template creation failure")
@@ -212,7 +224,7 @@ class DBConnection:
         #get all questions where feedback ID is NULL and feedback form ID matches
         #return these questions
         conn = self.createConnection(self.database)
-        getQuestionsStatement = ("SELECT * FROM Question INNER JOIN FeedbackForm ON Question.feedbackFormID = FeedbackForm.feedbackFormID WHERE FeedbackForm.EventID = '%s';" % eventID)
+        getQuestionsStatement = ("SELECT * FROM Question INNER JOIN events ON Question.feedbackFormID = events.feedbackFormID WHERE events.roomcode = '%s';" % eventID)
         feedbackQuestions = []
         questionIDs = []
         for row in conn.execute(getQuestionsStatement):
@@ -242,7 +254,7 @@ class DBConnection:
     def getAnswers(self, roomCode):
 
         conn = self.createConnection(self.database)
-        getQuestionID = ("SELECT questionID from Question WHERE feedbackFormID = (SELECT feedbackFormID FROM feedback WHERE roomcode= '%s');" %roomCode)
+        getQuestionID = ("SELECT questionID from Question WHERE feedbackFormID = (SELECT feedbackFormID FROM events WHERE roomcode= '%s');" %roomCode)
         getQuestions = ("SELECT content,type from Question WHERE questionID = ?")
         getAnswers= ("SELECT answer from feedbackQuestions WHERE questionID =?")
         questionAns = []

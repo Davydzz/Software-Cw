@@ -19,6 +19,7 @@
             var tableBody = document.createElement('tbody');
 
             tableData.forEach(function(rowData, index) {
+                console.log(index);
                 var row = document.createElement('tr');
                 for(var i=0; i<4; i++) {
                     var cellData = rowData[i];
