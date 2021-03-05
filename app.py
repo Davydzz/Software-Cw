@@ -13,6 +13,10 @@ import time
 
 from datetime import date, datetime
 
+import base64
+import hashlib
+
+
 #https://www.youtube.com/watch?v=2Zz97NVbH0U&ab_channel=PrettyPrinted
 #https://github.com/PrettyPrinted/youtube_video_code/tree/master/2020/02/10/Creating%20a%20Login%20Page%20in%20Flask%20Using%20Sessions/flask_session_example
 #16/02/2021
@@ -75,6 +79,7 @@ def profile():
             if role == "attendee":   
                 return redirect(url_for("attendee"))
             elif role == "host":
+                print("AAAAAAAAAA")
                 return redirect(url_for("liveFeedback", roomCode = roomcode))
                 
             else:
@@ -220,8 +225,9 @@ def register():
         
         #generate a salt here
         if password == passwordConfirm:
-            salt = "1234" #todo
-            hashedPassword = salt + password #take the hash of this todo
+            salt = str(base64.b64encode(os.urandom(16)),"utf-8")
+            toHash = salt + password #take the hash of this todo
+            hashedPassword = hashlib.sha256(bytes(toHash,"utf-8")).hexdigest()
             success, userID = db.addUser(salt, hashedPassword, firstName, lastName, email)
             if success:
                 #successful registration

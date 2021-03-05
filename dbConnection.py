@@ -1,4 +1,6 @@
 import sqlite3
+import hashlib
+
 import nltk
 nltk.download('vader_lexicon')
 from nltk.sentiment import SentimentIntensityAnalyzer
@@ -99,7 +101,8 @@ class DBConnection:
             salt = row[0]
         if not saltFound:
             return False, None
-        hashedPassword = salt + password #todo: hash this
+        toHash = salt + password
+        hashedPassword = hashlib.sha256(bytes(toHash,"utf-8")).hexdigest()
         existingUserStatement = ("SELECT * FROM users WHERE email = '%s' AND password = '%s'" % (email, hashedPassword))
         for row in conn.execute(existingUserStatement):
             #password matches the email
@@ -257,15 +260,6 @@ class DBConnection:
                     answer = ans[0]
                     score = obj.polarity_scores(answer)
                     final = score['compound']
-                questionAns.append([question,type, answer, final])
+                    questionAns.append([question,type, answer, final])
 
         return questionAns
-
-    def getSentimentScore(msgs, obj):
-
-        sentimentList = []
-        for user, msg in msgs:
-            score = obj.polarity_scores(msg)
-            sentimentList.append([user, score['compound']])
-
-        return sentimentList

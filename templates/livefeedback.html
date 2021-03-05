@@ -61,10 +61,13 @@
                 var cell = document.createElement("td");
                 cell.appendChild(document.createTextNode(rowData[2]));
             }
-          } else {
+          } else if (i==3){
             var cell = document.createElement("td");
             cell.appendChild(document.createTextNode(cellData));
-          }
+          } else if (i==0){
+            var cell = document.createElement("td");
+            cell.appendChild(document.createTextNode(cellData));
+          } 
           row.appendChild(cell);
         }
         tableBody.appendChild(row);
@@ -93,9 +96,9 @@
           Feedback Form
         </caption>
         <tr>
-          <th></th>
           <th>Question</th>
           <th>Feedback</th>
+          <th>Sentiment score</th>
         </tr>
       </table>
 
