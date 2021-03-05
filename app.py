@@ -16,7 +16,6 @@ from datetime import date, datetime
 import base64
 import hashlib
 
-
 #https://www.youtube.com/watch?v=2Zz97NVbH0U&ab_channel=PrettyPrinted
 #https://github.com/PrettyPrinted/youtube_video_code/tree/master/2020/02/10/Creating%20a%20Login%20Page%20in%20Flask%20Using%20Sessions/flask_session_example
 #16/02/2021

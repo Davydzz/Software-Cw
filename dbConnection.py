@@ -1,6 +1,5 @@
 import sqlite3
 import hashlib
-
 import nltk
 nltk.download('vader_lexicon')
 from nltk.sentiment import SentimentIntensityAnalyzer
