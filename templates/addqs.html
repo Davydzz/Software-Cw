@@ -2,11 +2,11 @@
 
 <HTML>
 <HEAD>
+	<link rel="stylesheet" href="{{ url_for('static',filename='styles/main.css') }}" type="text/css">
 	<TITLE> Add/Remove Questions on Form</TITLE>
-  <h3>Add/Remove Questions on Create Form</h3>
+  
 
-  <form action="" class="centrecontent" method="post">
-                <input type="input" placeholder="Enter Template Name" style="font-size:35px" name="templateName" class="centreButton"><br><br>
+  
 
 	<SCRIPT language="javascript">
 		function addRow(tableID) {
@@ -58,11 +58,21 @@
 	</SCRIPT>
 </HEAD>
 <BODY>
+	<!-- <div class="box header"><h2>Feedback System</h2></div>
+        <br> -->
+	<div class="box header"><h2>Feedback System</h2></div>
+	<br>
 
-    <FORM action="" class="centrecontent" method="post">
+	<div class="screenbox">
+	<h1>Add/Remove Questions on Feedback Form</h1>
+    <FORM action="" class="form" method="post">
+		
+	<div class="question">
+		<input type="input" placeholder="Enter Template Name" style="font-size:35px" name="templateName" class="centreButton"><br><br>
+	</div>
 
-	<INPUT type="button" value="Add Question" onclick="addRow('dataTable')" />
-	<INPUT type="button" value="Delete Question" onclick="deleteRow('dataTable')" />
+	<INPUT type="button" class="button" value="Add Question" onclick="addRow('dataTable')" />
+	<INPUT type="button" class="button" value="Delete Question" onclick="deleteRow('dataTable')" />
   <br><br>
 
 	<TABLE id="dataTable" name="questionTable" width="350px" border="1">
@@ -80,8 +90,9 @@
 	</TABLE>
 
   <br>
-  <INPUT type="submit" value="Create Form" />
+  <INPUT type="submit" value="Create Form" class="button" />
   </FORM>
+  </div>
 
 </BODY>
 </HTML>

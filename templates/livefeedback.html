@@ -22,8 +22,8 @@
 
   <script>
     function displayStars(numStars) {
-      var stars = document.getCreateElement("div");
- 
+      var stars = document.createElement("div");
+
       for (var x = 0; x < 5; x++) {
         var star = document.createElement("span");
 
@@ -39,21 +39,26 @@
       return stars;
     }
 
-    function createTable(tableData) {
+    function showAll(allScores) {
+      var res = document.createTextNode(allScores);
+      return res;
+    }
+
+    function createTable(tableData, allScores) {
       var table = document.getElementById("thisTable");
       var tablediv = document.getElementById("tablediv");
       var form = document.getElementById("feedbackform");
       var tableBody = document.createElement("tbody");
 
-      tableData.forEach(function (rowData) {
+      tableData.forEach(function (rowData, index) {
         var row = document.createElement("tr");
-        for (var i = 0; i < 3; i++) {
+        for (var i = 0; i < 4; i++) {
           var cellData = rowData[i];
           if (i == 1) {
             switch (cellData) {
               case "Star Rating":
                 var cell = document.createElement("td");
-                var stars= displayStars(rowData[2]);
+                var stars = displayStars(rowData[2]);
                 cell.appendChild(stars);
 
                 break;
@@ -61,9 +66,20 @@
                 var cell = document.createElement("td");
                 cell.appendChild(document.createTextNode(rowData[2]));
             }
-          } else {
+          } else if (i == 3) {
             var cell = document.createElement("td");
-            cell.appendChild(document.createTextNode(rowData[0]));
+            cell.addEventListener(
+              "mouseover",
+              function () {
+                console.log(allScores[index])
+                showAll(allScores[index]);
+              },
+              false
+            );
+            cell.appendChild(document.createTextNode(cellData));
+          } else if (i == 0) {
+            var cell = document.createElement("td");
+            cell.appendChild(document.createTextNode(cellData));
           }
           row.appendChild(cell);
         }
@@ -93,18 +109,19 @@
           Feedback Form
         </caption>
         <tr>
-          <th></th>
           <th>Question</th>
           <th>Feedback</th>
-
+          <th>Sentiment score</th>
         </tr>
       </table>
 
       <script>
-        var entries = JSON.parse("{{ g.qs|safe }}");
-
-        createTable(entries);
+        var entries = JSON.parse('{{ g.jdump|safe }}');
+        var sentScores = JSON.parse('{{ g.compDump|safe }}');
         console.log(entries);
+        console.log(sentScores);  
+        createTable(entries, sentScores);
+        //console.log(entries);
       </script>
     </div>
 

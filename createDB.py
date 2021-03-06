@@ -33,6 +33,8 @@ def main():
                                     hostUserID int,
                                     date DATETYPE NOT NULL,
                                     active bool NOT NULL,
+                                    feedbackFormID INTEGER NOT NULL,
+                                    FOREIGN KEY(feedbackFormID) REFERENCES FeedbackForm(feedbackFormID),
                                     FOREIGN KEY(hostUserID) REFERENCES Users(userID),
                                     PRIMARY KEY (roomcode)
                                   );"""
@@ -41,9 +43,7 @@ def main():
     feedback_form = """CREATE TABLE FeedbackForm (
                                     feedbackFormID INTEGER PRIMARY KEY AUTOINCREMENT,
                                     templateName text,
-                                    eventID int,
-                                    overallSentiment int,
-                                    FOREIGN KEY(eventID) REFERENCES events(roomcode)
+                                    overallSentiment int
                                 );"""
 
     event_membersTable = """CREATE TABLE event_members(
@@ -64,7 +64,6 @@ def main():
                                     timestamp DATETIME,
                                     feedbackFormID int,
                                     roomcode int NOT NULL,
-                                    feedbackText text NOT NULL,
                                     sentiment int NOT NULL,
                                     FOREIGN KEY(feedbackFormID) REFERENCES FeedbackForm(feedbackFormID),
                                     FOREIGN KEY (userID) REFERENCES users(userID)

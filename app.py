@@ -13,6 +13,9 @@ import time
 
 from datetime import date, datetime
 
+import base64
+import hashlib
+
 #https://www.youtube.com/watch?v=2Zz97NVbH0U&ab_channel=PrettyPrinted
 #https://github.com/PrettyPrinted/youtube_video_code/tree/master/2020/02/10/Creating%20a%20Login%20Page%20in%20Flask%20Using%20Sessions/flask_session_example
 #16/02/2021
@@ -58,7 +61,8 @@ def profile():
             displayResults.append(attendeeEvent)
         print(displayResults)
 
-        g.jdump = json.dumps(displayResults)
+        display = json.dumps(displayResults)
+        g.jdump = display.replace("'","\\'")
 
         if request.method == "POST":
             print(request.form)
@@ -73,9 +77,10 @@ def profile():
 
             session["room_code"] = roomcode
             if role == "attendee":   
-                return redirect(url_for("attendee", fromTemplate = " "))
+                return redirect(url_for("attendee"))
             elif role == "host":
-                return redirect(url_for("liveFeedback"))
+                print("AAAAAAAAAA")
+                return redirect(url_for("liveFeedback", roomCode = roomcode))
                 
             else:
                 print("something weird happened")
@@ -83,16 +88,17 @@ def profile():
 
     return render_template("create_or_join.html")
 
-@app.route("/attendee/<fromTemplate>", methods=["GET","POST"])
+@app.route("/attendee/", methods=["GET","POST"])
 #if not from template, then carry on as usual otherwise retrieve qs from db
-def attendee(fromTemplate):
+def attendee():
     #get what the feedback form looks like
     global db
     feedbackQuestions, feedbackFormID, questionIDs = db.getFeedbackFormDetails(session["room_code"])
     #feedbackQuestions, feedbackFormID, questionIDs = db.getFeedbackFormDetails(session["room_code"]) if fromTemplate == " " else db.getFeedbackTemplate(fromTemplate)
     print(feedbackQuestions)
 
-    g.jdump = json.dumps(feedbackQuestions)
+    feedbackQs = json.dumps(feedbackQuestions)
+    g.jdump = feedbackQs.replace("'","\\'")
 
     if request.method == "POST":
         result = []
@@ -126,7 +132,10 @@ def attendee(fromTemplate):
             for i in range(len(questionIDs)):
                 questionID = questionIDs[i]
                 answer = result[i]
-                db.addFeedbackQuestion(questionID, feedbackID, answer)
+                questionType = feedbackQuestions[i][2]
+                if questionType == "Star Rating":
+                    answer = len(answer)
+                db.addFeedbackQuestion(questionID, feedbackID, answer, session["room_code"],session["user_id"])
 
         except Exception as e:
             print(e)
@@ -146,7 +155,7 @@ def joinEvent():
         if db.joinEvent(roomCode, userID):
             #redirect to deliver feedback page
             session["room_code"] = roomCode
-            return redirect(url_for("attendee", fromTemplate = " "))
+            return redirect(url_for("attendee"))
 
 
     return render_template("join.html")
@@ -178,7 +187,9 @@ def createEvent():
             return redirect(url_for("createTemplate"))
         else:
             today = date.today()
-            bool, roomCode = db.createEvent(session["eventName"], session["feedbackFrequency"], session["user_id"], today , True) 
+            feedbackFormID = db.getFeedbackFormID(template)
+            print(session["user_id"])
+            bool, roomCode = db.createEvent(session["eventName"], session["feedbackFrequency"], session["user_id"], today , True, feedbackFormID) 
             session["room_code"] = roomCode
             return redirect(url_for("liveFeedback", roomCode = session["room_code"]))
             #return redirect(url_for("attendee", fromTemplate = template))
@@ -217,8 +228,9 @@ def register():
         
         #generate a salt here
         if password == passwordConfirm:
-            salt = "1234" #todo
-            hashedPassword = salt + password #take the hash of this todo
+            salt = str(base64.b64encode(os.urandom(16)),"utf-8")
+            toHash = salt + password #take the hash of this todo
+            hashedPassword = hashlib.sha256(bytes(toHash,"utf-8")).hexdigest()
             success, userID = db.addUser(salt, hashedPassword, firstName, lastName, email)
             if success:
                 #successful registration
@@ -280,10 +292,11 @@ def createTemplate():
 
             #add event to database
             today = date.today()
-            bool, roomCode = db.createEvent(session["eventName"], session["feedbackFrequency"], session["user_id"], today , True) 
+            feedbackFormID = db.addTemplate(result, name)
+            bool, roomCode = db.createEvent(session["eventName"], session["feedbackFrequency"], session["user_id"], today , True, feedbackFormID) 
             session["room_code"] = roomCode
             #add feedback form to the database db.addFeedbackForm(...)
-            db.addTemplate(result, roomCode, name)
+            
 
 
             roomcode = session["room_code"]
@@ -302,10 +315,13 @@ def createTemplate():
 def liveFeedback(roomCode):
 
     global db
-    feedbackQuestions = db.getAnswers(roomCode)
+    feedbackQuestions, nonCompounded = db.getAnswers(roomCode)
     print(feedbackQuestions)
 
-    g.qs = json.dumps(feedbackQuestions)
+    getQs = json.dumps(feedbackQuestions)
+    g.jdump = getQs.replace("'","\\'")
+
+    g.compDump = json.dumps(nonCompounded)
 
     #if request.method == "POST":
         
