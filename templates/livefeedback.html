@@ -39,13 +39,18 @@
       return stars;
     }
 
-    function createTable(tableData) {
+    function showAll(allScores) {
+      var res = document.createTextNode(allScores);
+      return res;
+    }
+
+    function createTable(tableData, allScores) {
       var table = document.getElementById("thisTable");
       var tablediv = document.getElementById("tablediv");
       var form = document.getElementById("feedbackform");
       var tableBody = document.createElement("tbody");
 
-      tableData.forEach(function (rowData) {
+      tableData.forEach(function (rowData, index) {
         var row = document.createElement("tr");
         for (var i = 0; i < 4; i++) {
           var cellData = rowData[i];
@@ -61,13 +66,21 @@
                 var cell = document.createElement("td");
                 cell.appendChild(document.createTextNode(rowData[2]));
             }
-          } else if (i==3){
+          } else if (i == 3) {
+            var cell = document.createElement("td");
+            cell.addEventListener(
+              "mouseover",
+              function () {
+                console.log(allScores[index])
+                showAll(allScores[index]);
+              },
+              false
+            );
+            cell.appendChild(document.createTextNode(cellData));
+          } else if (i == 0) {
             var cell = document.createElement("td");
             cell.appendChild(document.createTextNode(cellData));
-          } else if (i==0){
-            var cell = document.createElement("td");
-            cell.appendChild(document.createTextNode(cellData));
-          } 
+          }
           row.appendChild(cell);
         }
         tableBody.appendChild(row);
@@ -104,8 +117,10 @@
 
       <script>
         var entries = JSON.parse('{{ g.jdump|safe }}');
+        var sentScores = JSON.parse('{{ g.compDump|safe }}');
         console.log(entries);
-        createTable(entries);
+        console.log(sentScores);  
+        createTable(entries, sentScores);
         //console.log(entries);
       </script>
     </div>

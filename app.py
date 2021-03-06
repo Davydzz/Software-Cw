@@ -61,7 +61,8 @@ def profile():
             displayResults.append(attendeeEvent)
         print(displayResults)
 
-        g.jdump = json.dumps(displayResults)
+        display = json.dumps(displayResults)
+        g.jdump = display.replace("'","\\'")
 
         if request.method == "POST":
             print(request.form)
@@ -96,7 +97,8 @@ def attendee():
     #feedbackQuestions, feedbackFormID, questionIDs = db.getFeedbackFormDetails(session["room_code"]) if fromTemplate == " " else db.getFeedbackTemplate(fromTemplate)
     print(feedbackQuestions)
 
-    g.jdump = json.dumps(feedbackQuestions)
+    feedbackQs = json.dumps(feedbackQuestions)
+    g.jdump = feedbackQs.replace("'","\\'")
 
     if request.method == "POST":
         result = []
@@ -133,7 +135,7 @@ def attendee():
                 questionType = feedbackQuestions[i][2]
                 if questionType == "Star Rating":
                     answer = len(answer)
-                db.addFeedbackQuestion(questionID, feedbackID, answer)
+                db.addFeedbackQuestion(questionID, feedbackID, answer, session["room_code"],session["user_id"])
 
         except Exception as e:
             print(e)
@@ -186,6 +188,7 @@ def createEvent():
         else:
             today = date.today()
             feedbackFormID = db.getFeedbackFormID(template)
+            print(session["user_id"])
             bool, roomCode = db.createEvent(session["eventName"], session["feedbackFrequency"], session["user_id"], today , True, feedbackFormID) 
             session["room_code"] = roomCode
             return redirect(url_for("liveFeedback", roomCode = session["room_code"]))
@@ -312,10 +315,13 @@ def createTemplate():
 def liveFeedback(roomCode):
 
     global db
-    feedbackQuestions = db.getAnswers(roomCode)
+    feedbackQuestions, nonCompounded = db.getAnswers(roomCode)
     print(feedbackQuestions)
 
-    g.jdump = json.dumps(feedbackQuestions)
+    getQs = json.dumps(feedbackQuestions)
+    g.jdump = getQs.replace("'","\\'")
+
+    g.compDump = json.dumps(nonCompounded)
 
     #if request.method == "POST":
         
