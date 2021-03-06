@@ -273,7 +273,6 @@ class DBConnection:
         questionAns = []
         nonCompounded= []
 
-
         for elem in conn.execute(getQuestionID):
             questionID = elem[0]
 
