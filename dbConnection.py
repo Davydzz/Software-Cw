@@ -92,7 +92,7 @@ class DBConnection:
 
         if conn is not None:
             hostStatement = ("SELECT roomcode, eventName FROM events WHERE hostUserID = '%s';" % userID)
-            attendeeStatement = ("SELECT events.roomcode, events.eventName FROM events INNER JOIN event_members ON events.roomcode = event_members.roomcode WHERE event_members.userID = '%s' AND events.active = 'True';" % userID)
+            attendeeStatement = ("SELECT events.roomcode, events.eventName FROM events INNER JOIN event_members ON events.roomcode = event_members.roomcode WHERE event_members.userID = '%s' AND events.active = 1;" % userID)
             
             hostRows = []
             attendeeRows = []

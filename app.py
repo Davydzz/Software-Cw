@@ -62,6 +62,7 @@ def profile():
         print(displayResults)
 
         display = json.dumps(displayResults)
+        print("displayResults",displayResults)
         g.jdump = display.replace("'","\\'")
 
         if request.method == "POST":
