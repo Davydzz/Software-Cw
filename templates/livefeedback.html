@@ -68,14 +68,6 @@
             }
           } else if (i == 3) {
             var cell = document.createElement("td");
-            cell.addEventListener(
-              "mouseover",
-              function () {
-                console.log(allScores[index])
-                showAll(allScores[index]);
-              },
-              false
-            );
             cell.appendChild(document.createTextNode(cellData));
           } else if (i == 0) {
             var cell = document.createElement("td");
@@ -119,10 +111,19 @@
         var entries = JSON.parse('{{ g.jdump|safe }}');
         var sentScores = JSON.parse('{{ g.compDump|safe }}');
         console.log(entries);
-        console.log(sentScores);  
+        console.log(sentScores);
         createTable(entries, sentScores);
         //console.log(entries);
       </script>
+
+      <form action="/chart/{{g.room_code}}" class="centrecontent">
+        <input
+          type="submit"
+          value="See visualisation"
+          style="font-size: 35px"
+          class="button"
+        />
+      </form>
     </div>
 
     <script
