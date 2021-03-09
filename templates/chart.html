@@ -79,11 +79,11 @@
       <div style="border: 1px solid #000000;">
 
       Show feedback for the last
-      <form action="/action.php">
-        <label for="hours">hours:</label><br>
-        <input type="text" id="hours" name="hours" value="hours"><br>
-        <label for="minutes">minutes:</label><br>
-        <input type="text" id="minutes" name="minutes" value="minutes"><br><br>
+      <form  id="time" onchange="document.location.href = 'page.php?var=' + minutes + hours">
+        <label for="hour">hours:</label><br>
+        <input type="text" id="hour" name="hour" value=""><br>
+        <label for="minute">minutes:</label><br>
+        <input type="text" id="minute" name="minute" value=""><br><br>
         <input type="submit" value="Submit">
       </form>
 
@@ -113,34 +113,97 @@
         var number = 0;
         var totalStars = 0;
 
+
+
         for(var index = 0; index < entries.length; index++) {
-          if (entries[index][1] == 'Star Rating'){
+          
+
+
+
+
+          const urlParams = new URLSearchParams(window.location.search);
+          const userMinutes = urlParams.get('minute');
+          const userHours = urlParams.get('hour');
+
+
+          if (userMinutes == null || (userMinutes == '' && userHours == '') || userHours == null  ||
+            isNaN(userMinutes) || isNaN(userHours)){
+
+            if (entries[index][1] == 'Star Rating'){
+
+
+
+              number = number + 1;
+              totalStars = totalStars + parseInt(entries[index][2]);
+
+
+              if (entries[index][2] == '1'){
+                one += 1;
+              }
+
+              if (entries[index][2] == '2'){
+                two += 1;
+              }
+
+              if (entries[index][2] == '3'){
+                three += 1;
+              }
+
+              if (entries[index][2] == '4'){
+                four += 1;
+              }
+
+              if (entries[index][2] == '5'){
+                five += 1;
+              }
+
+          }
+        }
+
+
+        else{
+          var seconds = new Date() / 1000;
+
+          if (userHours == ''){
+            seconds = seconds - (userMinutes * 60);
+          }
+          else if (userMinutes == ''){
+            seconds = seconds - (userHours * 3600);
+          }
+          else{
+            seconds = seconds - (userMinutes * 60);
+            seconds = seconds - (userHours * 3600);
+          }
+
+
+          if (entries[index][1] == 'Star Rating' && entries[index][4] >= seconds){
 
             number = number + 1;
             totalStars = totalStars + parseInt(entries[index][2]);
 
 
             if (entries[index][2] == '1'){
-              one += 1;
+              one = one + 1;
             }
 
             if (entries[index][2] == '2'){
-              two += 1;
+              two = two + 1;
             }
 
             if (entries[index][2] == '3'){
-              three += 1;
+              three = three + 1;
             }
 
             if (entries[index][2] == '4'){
-              four += 1;
+              four = four + 1;
             }
 
             if (entries[index][2] == '5'){
-              five += 1;
-            }
-
+              five = five + 1;
+            }             
           }
+         } 
+
         }
 
         var averageStars = totalStars/number;
