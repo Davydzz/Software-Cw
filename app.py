@@ -62,6 +62,7 @@ def profile():
         print(displayResults)
 
         display = json.dumps(displayResults)
+        print("displayResults",displayResults)
         g.jdump = display.replace("'","\\'")
 
         if request.method == "POST":
@@ -315,6 +316,22 @@ def createTemplate():
 def liveFeedback(roomCode):
 
     global db
+
+    feedbackQuestions, nonCompounded = db.getAnswers(roomCode)
+    print(feedbackQuestions)
+
+    getQs = json.dumps(feedbackQuestions)
+    g.jdump = getQs.replace("'","\\'")
+
+    g.compDump = json.dumps(nonCompounded)
+
+        
+    return render_template("livefeedback.html")
+
+@app.route("/chart/<roomCode>", methods=["GET","POST"])
+def chart(roomCode):
+
+    global db
     feedbackQuestions, nonCompounded = db.getAnswers(roomCode)
     print(feedbackQuestions)
 
@@ -326,5 +343,5 @@ def liveFeedback(roomCode):
     #if request.method == "POST":
         
 
-    return render_template("livefeedback.html")
+    return render_template("chart.html")
 

@@ -19,6 +19,10 @@ body, html {
     font-weight: 600;
 }
 
+#dataTable {
+  width: 100%;
+  border: 1px solid black;
+}
 
 
 form {
@@ -204,3 +208,17 @@ form .question {
     -webkit-transform: translate(5px, -35px) scale(0.6);
     transform: translate(5px, -35px) scale(0.6);
   }
+
+
+  .graphbox {
+    position: relative;
+    top: 50%;
+    left: 25%;
+    transform: translate(-50%, -50%);
+    background-color: rgb(255, 255, 255);
+    height: 400px;
+    width: fit-content;
+    border-radius: 30px;
+    box-shadow: 0px 10px 30px rgb(0 0 0 / 10%);
+    padding: 60px; 
+}
