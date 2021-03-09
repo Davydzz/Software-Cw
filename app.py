@@ -328,11 +328,16 @@ def liveFeedback(roomCode):
         
     return render_template("livefeedback.html")
 
+
+
+
+
+
 @app.route("/chart/<roomCode>", methods=["GET","POST"])
 def chart(roomCode):
 
     global db
-    feedbackQuestions, nonCompounded = db.getAnswers(roomCode)
+    feedbackQuestions, nonCompounded = db.getAnswersDate(roomCode)
     print(feedbackQuestions)
 
     getQs = json.dumps(feedbackQuestions)

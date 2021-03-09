@@ -1,6 +1,7 @@
 import sqlite3
 import hashlib
 import nltk
+import datetime,time
 nltk.download('vader_lexicon')
 from nltk.sentiment import SentimentIntensityAnalyzer
 obj = SentimentIntensityAnalyzer()
@@ -263,27 +264,55 @@ class DBConnection:
         return feedbackQuestions
     
 
-    def getAnswers(self, roomCode):
+
+
+
+
+
+
+    def getAnswersDate(self, roomCode):
 
         conn = self.createConnection(self.database)
-        getQuestionID = "SELECT questionID from Question WHERE feedbackFormID = (SELECT feedbackFormID FROM events WHERE roomcode= ?);" #? =roomCode
+        getQuestionID = ("SELECT questionID from Question WHERE feedbackFormID = (SELECT feedbackFormID FROM events WHERE roomcode= '%s');" %roomCode)
         getQuestions = ("SELECT content,type from Question WHERE questionID = ?")
-        getAnswers=  ("SELECT answer from feedbackQuestions INNER JOIN feedback ON feedbackQuestions.feedbackID = feedback.feedbackID WHERE feedbackQuestions.questionID = ? AND feedback.roomcode = ?")
+        #getAnswers= ("SELECT answer,feedBackID from feedbackQuestions WHERE questionID =?")
+        #getAnswers=  ("SELECT answer from feedbackQuestions INNER JOIN feedback ON feedbackQuestions.feedbackID = feedback.feedbackID WHERE feedbackQuestions.questionID = ? AND feedback.roomcode = ?")
+        getFeedbackID= ("SELECT feedBackID from feedbackQuestions WHERE questionID =?")
+        getAnswers=  ("SELECT answer,feedback.feedBackID from feedbackQuestions INNER JOIN feedback ON feedbackQuestions.feedbackID = feedback.feedbackID WHERE feedbackQuestions.questionID = ? AND feedback.roomcode = ?")
+
+
+        getTimeStamp = ("SELECT timestamp from feedback WHERE feedBackID =?")
+
+
+
         questionAns = []
         nonCompounded= []
 
-        for elem in conn.execute(getQuestionID,(roomCode,)):
+
+        for elem in conn.execute(getQuestionID):
             questionID = elem[0]
 
             for qs in conn.execute(getQuestions, (questionID,)):
                 question = qs[0]
                 type = qs[1]
                 
+                #for ans in conn.execute(getAnswers, (questionID,)):
                 for ans in conn.execute(getAnswers, (questionID,roomCode)):
+
+                    #for ans in conn.execute(getFeedbackID, (questionID,)):
+
                     answer = ans[0]
+
+                    feedBackID = ans[1]
+                    for stamp in conn.execute(getTimeStamp, (feedBackID,)):
+                        timestamp = stamp[0]
+
+                    date_time_obj = datetime.datetime.strptime(timestamp, '%Y-%m-%d %H:%M:%S.%f')
+                    timestamp = time.mktime(date_time_obj.timetuple())
+
                     score = obj.polarity_scores(answer)
                     final = score['compound']
                     nonCompounded.append(score)
-                    questionAns.append([question,type, answer, final])
+                    questionAns.append([question,type, answer, final, timestamp])
 
         return questionAns, nonCompounded
