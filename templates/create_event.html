@@ -25,27 +25,27 @@
             <label class="labelLogin">Template: </label>
             <select name="template">
 
-                <ul>
+              
                     {% for template in list %}
-                    <li>
+                  
                         <option value={{template}}> {{template}}</option>
-                    </li>
+                 
                     {% endfor %}
-                </ul>
+               
 
-                <option value="Create">Create your Own Template</option><br>
+                <option value="Create">Create your Own Template</option>
             </select><br><br>
 
             <label class="labelLogin">Feedback Frequency: </label>
-            <select name="feedbackFrequency" onchange="displayDivDemo('hideValuesOnSelect',this)"><br><br>
-                <option value="prompt">When Prompted by Host</option><br><br>
-                <option value="attendeeChoice">When an Attendee Chooses</option><br><br>
-                <option value="interval">At Set Intervals</option><br>
+            <select name="feedbackFrequency" onchange="displayDivDemo('hideValuesOnSelect',this)">
+                <option value="prompt">When Prompted by Host</option>
+                <option value="attendeeChoice">When an Attendee Chooses</option>
+                <option value="interval">At Set Intervals</option>
             </select><br><br>
 
             <div id="hideValuesOnSelect" style="display:none">
-                <input type="input" placeholder="Hour" name="hour" style="font-size:35px"><br><br>
-                <input type="input" placeholder="Minute" name="minute" style="font-size:35px"><br><br>
+                <input type="text" placeholder="Hour" name="hour" style="font-size:35px"><br><br>
+                <input type="text" placeholder="Minute" name="minute" style="font-size:35px"><br><br>
             </div>
             <input type="submit" value="Submit" class="button"><br>
         </form>
