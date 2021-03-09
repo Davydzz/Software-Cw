@@ -266,9 +266,55 @@ class DBConnection:
 
 
 
+    def getAnswers(self, roomCode):
+
+        conn = self.createConnection(self.database)
+        getQuestionID = ("SELECT questionID from Question WHERE feedbackFormID = (SELECT feedbackFormID FROM events WHERE roomcode= '%s');" %roomCode)
+        getQuestions = ("SELECT content,type from Question WHERE questionID = ?")
+        getAnswers= ("SELECT answer from feedbackQuestions WHERE questionID =?")
+        questionAns = []
 
 
+        for elem in conn.execute(getQuestionID):
+            questionID = elem[0]
 
+            for qs in conn.execute(getQuestions, (questionID,)):
+                question = qs[0]
+                type = qs[1]
+                
+                for ans in conn.execute(getAnswers, (questionID,)):
+                    answer = ans[0]
+                    score = obj.polarity_scores(answer)
+                    final = score['compound']
+                    questionAns.append([question,type, answer, final])
+
+        return questionAns
+    
+
+    def getAnswers(self, roomCode):
+
+        conn = self.createConnection(self.database)
+        getQuestionID = ("SELECT questionID from Question WHERE feedbackFormID = (SELECT feedbackFormID FROM events WHERE roomcode= '%s');" %roomCode)
+        getQuestions = ("SELECT content,type from Question WHERE questionID = ?")
+        getAnswers= ("SELECT answer from feedbackQuestions WHERE questionID =?")
+        questionAns = []
+
+
+        for elem in conn.execute(getQuestionID):
+            questionID = elem[0]
+
+            for qs in conn.execute(getQuestions, (questionID,)):
+                question = qs[0]
+                type = qs[1]
+                
+                for ans in conn.execute(getAnswers, (questionID,)):
+                    answer = ans[0]
+                    score = obj.polarity_scores(answer)
+                    final = score['compound']
+                    questionAns.append([question,type, answer, final])
+
+        return questionAns
+    
 
     def getAnswersDate(self, roomCode):
 
