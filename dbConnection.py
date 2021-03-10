@@ -74,18 +74,7 @@ class DBConnection:
             conn.commit()
             return True
         return False
-        
-    def createFeedbackForm(self, eventID, overallSentiment):
-        conn = self.createConnection(self.database)
 
-        if conn is not None:
-            insertStatement = "INSERT INTO feedbackform (eventID, overallSentiment) VALUES (?, ?);" #?1 = eventID, ?2 = overallSentiment
-            conn.execute(insertStatement,(eventID, overallSentiment))
-            id = conn.execute('select last_insert_rowID();')
-            id = id.fetchone()
-            id = id[0]
-            conn.commit()
-            return True,id
 
     def getUserEvents(self, userID):
         #return all events that the user is a host or an attendee of
@@ -190,13 +179,13 @@ class DBConnection:
 
         conn = self.createConnection(self.database)
         #added templateName to differenciate in the drop down menu
-        addFeedbackForm = ("""INSERT INTO FeedbackForm(templateName, overallSentiment) VALUES (?,?);""")
+        addFeedbackForm = ("""INSERT INTO FeedbackForm(templateName) VALUES (?);""")
         
         addQuestion = ("INSERT INTO Question(questionNumber, type, content, feedbackFormID) VALUES (?,?,?,?);")
         #getFeedbackFormID = ("SELECT feedbackFormID FROM FeedbackForm WHERE eventID = ?")
 
         feedbackID = -1
-        conn.execute(addFeedbackForm, (templateName, 0))
+        conn.execute(addFeedbackForm, (templateName,))
         id = conn.execute('select last_insert_rowID();')
         id = id.fetchone()
         feedbackID = id[0]
