@@ -18,30 +18,27 @@
         color: orange;
       }
     </style>
+    <script>
+      function displayStars(numStars) {
+        var stars = document.createElement("div");
+  
+        for (var x = 0; x < 5; x++) {
+          var star = document.createElement("span");
+  
+          if (x < numStars) {
+            star.className = "fa fa-star checked";
+          } else {
+            star.className = "fa fa-star";
+          }
+  
+          stars.appendChild(star);
+        }
+  
+        return stars;
+      }
+      </script>
   </head>
 
-  <script>
-    function displayStars(numStars) {
-      var stars = document.createElement("div");
-
-      for (var x = 0; x < 5; x++) {
-        var star = document.createElement("span");
-
-        if (x < numStars) {
-          star.className = "fa fa-star checked";
-        } else {
-          star.className = "fa fa-star";
-        }
-
-        stars.appendChild(star);
-      }
-
-      return stars;
-    }
-
-
-  <!-- https://stackoverflow.com/questions/15164655/generate-html-table-from-2d-javascript-array -->
-  <!-- https://stackoverflow.com/questions/61472018/how-do-i-convert-pythonflask-list-of-objects-to-js-list-of-objects -->
   <body>
 
     <script
@@ -61,8 +58,8 @@
     <div class="screenbox">
               <h1>{{g.room_code}}</h1>
             
-              <div style="width: 600px; display: table-cell;", id="averageMood"> Left </div>
-              <div style="display: table-cell;", id="averageRating"> Right </div>
+              <div style="width: 600px; display: table-cell;" id="averageMood"> Left </div>
+              <div style="display: table-cell;" id="averageRating"> Right </div>
 
 
                      <!--User picks what feedback they want displayed -->
@@ -91,10 +88,10 @@
     </div>
 
 
-      <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+      <script src="https://www.gstatic.com/charts/loader.js"></script>
 
 
-      <script type="text/javascript">
+      <script>
       // Load google charts
       google.charts.load('current', {'packages':['corechart']});
       google.charts.setOnLoadCallback(drawChart);
@@ -230,7 +227,7 @@
       }
       </script>
 
-      <script type="text/javascript">
+      <script>
       // Load google charts
       google.charts.load('current', {'packages':['corechart']});
       google.charts.setOnLoadCallback(drawChart2);
