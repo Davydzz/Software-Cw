@@ -69,6 +69,11 @@ function drawChart() {
 </script>
 
 <script type="text/javascript">
+
+var positiveVal = 8, neutralVal = 2, negativeVal = 3;
+
+//request to backend
+
 // Load google charts
 google.charts.load('current', {'packages':['corechart']});
 google.charts.setOnLoadCallback(drawChart);
@@ -78,9 +83,9 @@ google.charts.setOnLoadCallback(drawChart);
 function drawChart() {
   var data = google.visualization.arrayToDataTable([
   ['Mood', 'Frequency'],
-  ['Positive', 8],
-  ['Neutral', 2],
-  ['Negative', 4]
+  ['Positive', positiveVal],
+  ['Neutral', neutralVal],
+  ['Negative', negativeVal]
 ]);
 
   // title and the width and height of the chart average mood displayed from database
