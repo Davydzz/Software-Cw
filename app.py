@@ -29,12 +29,13 @@ db = DBConnection()
 def before_request():
     g.user = None
     g.room_code = None
+    #store details about the user in the session
     if "user_id" in session:
         thisUserID = session["user_id"]
         results = db.getUserFromUserID(thisUserID)
-        print(results)
         thisUser = User(thisUserID, results[5], results[3])
         g.user = thisUser
+    #store details about the room code in the session
     if "room_code" in session:
         g.room_code = session["room_code"]
 
@@ -42,16 +43,19 @@ def before_request():
 def home():
     return render_template("index.html")
 
-@app.route("/profile", methods=["GET","POST"]) #user logged in, they can now create or join an event
+@app.route("/profile", methods=["GET","POST"])
 def profile():
     global db
-    if not g.user: #if not logged in
-        #abort(403)
+    if not g.user: 
+        #if user not logged in, redirect them to the login page
         return redirect(url_for("login"))
     else:
-        #they are logged in, continue
+        #user is logged in
+
+        #store events user is hosting and attending
         hostRows, attendeeRows = db.getUserEvents(session["user_id"])
 
+        #combine all events and store in 'displayResults'
         displayResults = []
         for hostEvent in hostRows:
             hostEvent.append("host")
@@ -59,44 +63,30 @@ def profile():
         for attendeeEvent in attendeeRows:
             attendeeEvent.append("attendee")
             displayResults.append(attendeeEvent)
-        print(displayResults)
-
+        
         display = json.dumps(displayResults)
-        print("displayResults",displayResults)
         g.jdump = display.replace("'","\\'")
 
         if request.method == "POST":
-            print(request.form)
-
-            chosenIndex = int(request.form["joinButton"])
-
-            print(chosenIndex)
+            chosenIndex = int(request.form["joinButton"]) #index of event in displayResults user clicked on
 
             result = displayResults[chosenIndex]
             roomcode = result[0]
             role = result[2]
 
-            session["room_code"] = roomcode
-            if role == "attendee":   
+            session["room_code"] = roomcode #store room code in session
+            if role == "attendee":
                 return redirect(url_for("attendee"))
             elif role == "host":
-                print("AAAAAAAAAA")
                 return redirect(url_for("liveFeedback", roomCode = roomcode))
-                
-            else:
-                print("something weird happened")
-                print(role)
 
     return render_template("create_or_join.html")
 
 @app.route("/attendee/", methods=["GET","POST"])
-#if not from template, then carry on as usual otherwise retrieve qs from db
 def attendee():
-    #get what the feedback form looks like
     global db
+    #get the relevant feedback form for the event the user is attending
     feedbackQuestions, feedbackFormID, questionIDs = db.getFeedbackFormDetails(session["room_code"])
-    #feedbackQuestions, feedbackFormID, questionIDs = db.getFeedbackFormDetails(session["room_code"]) if fromTemplate == " " else db.getFeedbackTemplate(fromTemplate)
-    print(feedbackQuestions)
 
     feedbackQs = json.dumps(feedbackQuestions)
     g.jdump = feedbackQs.replace("'","\\'")
@@ -104,22 +94,25 @@ def attendee():
     if request.method == "POST":
         result = []
         try:
-            anonymous = request.form["anonymous"] #will be a string, either "True" for anonymous or "False" for not anonymous            
+            anonymous = request.form["anonymous"] #a string, "True" for anonymous or "False" for not anonymous            
             form = request.form
 
             for key in form.keys():
                 for value in form.getlist(key):
                     if key == "starRating":
                         if value == "":
+                            #the user has not selected an option for the star rating
                             raise Exception
                         else:
                             result.append(value)
                     elif key == "text":
                         if value == "":
+                            #the user has not input anything in the text feedback box
                             raise Exception
                         else:
                             result.append(value)
                             
+            #convert the variable, 'anonymous' into a boolean
             if anonymous == "True":
                 anonymous = True
             else:
@@ -127,9 +120,13 @@ def attendee():
 
             userID = None
             if ("user_id" in session) and (anonymous == False):
+                #set the userID only if the user is logged into an account and has opted to not be anonymous
                 userID = session["user_id"]
-            successful, feedbackID = db.addFeedback(userID, anonymous, datetime.now(), feedbackFormID, session["room_code"], 0) #0 is sentiment - change this!!
 
+            #add feedback to the database
+            successful, feedbackID = db.addFeedback(userID, anonymous, datetime.now(), feedbackFormID, session["room_code"], 0)
+
+            #add each question in the feedback form to the database
             for i in range(len(questionIDs)):
                 questionID = questionIDs[i]
                 answer = result[i]
@@ -138,9 +135,9 @@ def attendee():
                     answer = len(answer)
                 db.addFeedbackQuestion(questionID, feedbackID, answer, session["room_code"],session["user_id"])
 
+            g.feedbackresult = "Thanks! Your feedback has been submitted!"
         except Exception as e:
-            print(e)
-            print("You failed")
+            g.feedbackresult = "Please complete all questions on the feedback form"
 
     return render_template("deliver_feedback.html")
 
@@ -148,27 +145,25 @@ def attendee():
 def joinEvent():
     global db
     if request.method == "POST":
-        session.pop("room_code",None) #remove room code if it is set
+        session.pop("room_code",None) #remove room code if it is already set
         roomCode = request.form["roomCode"]
         userID = None
         if "user_id" in session:
             userID = session["user_id"]
-        if db.joinEvent(roomCode, userID):
+        if db.joinEvent(roomCode, userID): #add user to database
             #redirect to deliver feedback page
             session["room_code"] = roomCode
             return redirect(url_for("attendee"))
-
 
     return render_template("join.html")
 
 @app.route("/create", methods=["GET","POST"])
 def createEvent():
     global db
-    templateList = db.returnTemplates()
-    print(templateList)
+    templateList = db.returnTemplates() #store list of all templates in database
 
     if request.method == "POST":
-        session.pop("room_code",None) #remove room code if it is set
+        session.pop("room_code",None) #remove room code if it is already set
         eventName = request.form["eventName"]
         template = request.form["template"]
         feedbackFrequency = request.form["feedbackFrequency"]
@@ -179,22 +174,15 @@ def createEvent():
         session["eventName"] = eventName
         session["template"] = template
         session["feedbackFrequency"] = feedbackFrequency
-        session["hour"] = hour
-        session["minute"] = minute #no idea if this is good coding
-
-        #print(eventName, template, feedbackFrequency)
-        #print(hour, minute)
+      
         if template == "Create":
             return redirect(url_for("createTemplate"))
         else:
             today = date.today()
             feedbackFormID = db.getFeedbackFormID(template)
-            print(session["user_id"])
             bool, roomCode = db.createEvent(session["eventName"], session["feedbackFrequency"], session["user_id"], today , True, feedbackFormID) 
             session["room_code"] = roomCode
             return redirect(url_for("liveFeedback", roomCode = session["room_code"]))
-            #return redirect(url_for("attendee", fromTemplate = template))
-
 
     return render_template("create_event.html", list = templateList)
 
@@ -202,14 +190,15 @@ def createEvent():
 def login():
     global db
     if request.method == "POST":
-        session.pop("user_id",None) #remove user ID if it is set
+        session.pop("user_id",None) #remove user ID if it is already set
         email = request.form["username"]
         password = request.form["password"]
-
-        success, userID = db.confirmLogin(email, password)
+        success, userID = db.confirmLogin(email, password) #returns true if successful, false otherwise
         if success:
             session["user_id"] = userID
+            #redirect to user's profile if successful login
             return redirect(url_for("profile"))
+        #redirect to login page if unsuccessful login
         return redirect(url_for("login"))
         
     return render_template("login.html")
@@ -217,136 +206,94 @@ def login():
 @app.route("/register", methods=["GET","POST"])
 def register():
     global db
-    
     if request.method == "POST":
-        session.pop("user_id",None) #remove user ID if it is set
-        #username = request.form["username"]
+        session.pop("user_id",None) #remove user ID if it is already set
         firstName = request.form["firstName"]
         lastName = request.form["lastName"]
         email = request.form["email"]
         password = request.form["password"]
         passwordConfirm = request.form["passwordConfirm"]
         
-        #generate a salt here
         if password == passwordConfirm:
-            salt = str(base64.b64encode(os.urandom(16)),"utf-8")
-            toHash = salt + password #take the hash of this todo
-            hashedPassword = hashlib.sha256(bytes(toHash,"utf-8")).hexdigest()
-            success, userID = db.addUser(salt, hashedPassword, firstName, lastName, email)
+            salt = str(base64.b64encode(os.urandom(16)),"utf-8") #generate a salt
+            toHash = salt + password #concatenate salt and input password
+            hashedPassword = hashlib.sha256(bytes(toHash,"utf-8")).hexdigest() #hash the concatenation
+            success, userID = db.addUser(salt, hashedPassword, firstName, lastName, email) #attempt to add the user to the database
             if success:
-                #successful registration
+                #successful registration, redirect to user's profile
                 session["user_id"] = userID
                 return redirect(url_for("profile"))
             else:
-                #email already exists
-                print("EMAIL ALREADY EXISTS")
-                return redirect(url_for("register"))
-                
+                #email already exists, redirect to registration page
+                return redirect(url_for("register"))   
         else:
-            print("PASSWORDS DON'T MATCH")
-            #passwords don't match
+            #passwords don't match, redirect to registration page
             return redirect(url_for("register"))
 
     return render_template("register.html")
 
 @app.route("/createtemplate", methods=["GET","POST"])
-#https://stackoverflow.com/questions/17752301/dynamic-form-fields-in-flask-request-form 24/02/2021
 def createTemplate():
     global db
-
-    if request.method == "POST":
-        #result = {}
-        #A hashmap will not preserve the index of the qs (txt and qT need to match)
-        # Example=  {'txt': ['hello', 'hello1'], 'questionType': ['Text', 'Text']}
-        # There is no link between "hello" and "Text"
-        
+    if request.method == "POST":        
         result = []
         try:
             name = request.form["templateName"]           
             form = request.form
-            #result["txt"] = []
-            #result["questionType"] = []
 
             index = 0
-
             for key in form.keys():
                 for value in form.getlist(key):
-
                     if key == "txt":
                         if value == "":
+                            #There is a question that has not been given a question name
                             raise Exception
                         else:
                             result.append([value])
                     elif key == "questionType":
                         if value == "blank":
+                            #There is a quetion that has not been assigned a question type
                             raise Exception
                         else:
                             result[index].append(value)
                             index +=1
 
-                #index +=1
-                    #result[key].append(value)
-            print(result)
-
-            #Now the txt and qT match up
-            #[['hello', 'Text'], ['hello2', 'Text']]
+            
+            today = date.today()
+            #add template to database
+            feedbackFormID = db.addTemplate(result, name) 
 
             #add event to database
-            today = date.today()
-            feedbackFormID = db.addTemplate(result, name)
             bool, roomCode = db.createEvent(session["eventName"], session["feedbackFrequency"], session["user_id"], today , True, feedbackFormID) 
-            session["room_code"] = roomCode
-            #add feedback form to the database db.addFeedbackForm(...)
             
-
-
+            session["room_code"] = roomCode
             roomcode = session["room_code"]
             return redirect(url_for("liveFeedback", roomCode = roomcode))
         except Exception as e:
-            print(e)
-            print("You failed")
+            return render_template("addqs.html")
     return render_template("addqs.html")
-
-
-
-
-
 
 @app.route("/liveFeedback/<roomCode>", methods=["GET","POST"])
 def liveFeedback(roomCode):
-
     global db
 
+    #get feedback questions and sentiment score
     feedbackQuestions, nonCompounded = db.getAnswersDate(roomCode)
-    print(feedbackQuestions)
 
     getQs = json.dumps(feedbackQuestions)
     g.jdump = getQs.replace("'","\\'")
-
     g.compDump = json.dumps(nonCompounded)
-
-        
     return render_template("livefeedback.html")
-
-
-
-
-
 
 @app.route("/chart/<roomCode>", methods=["GET","POST"])
 def chart(roomCode):
-
     global db
+    #get feedback questions and sentiment score
     feedbackQuestions, nonCompounded = db.getAnswersDate(roomCode)
-    print(feedbackQuestions)
 
     getQs = json.dumps(feedbackQuestions)
     g.jdump = getQs.replace("'","\\'")
-
     g.compDump = json.dumps(nonCompounded)
-
-    #if request.method == "POST":
-        
 
     return render_template("chart.html")
 
