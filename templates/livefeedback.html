@@ -13,89 +13,24 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
     />
-    <style>
-      .checked {
-        color: orange;
-      }
-    </style>
 
-  <script>
-    function displayStars(numStars) {
-      var stars = document.createElement("div");
-
-      for (var x = 0; x < 5; x++) {
-        var star = document.createElement("span");
-
-        if (x < numStars) {
-          star.className = "fa fa-star checked";
-        } else {
-          star.className = "fa fa-star";
-        }
-
-        stars.appendChild(star);
-      }
-
-      return stars;
-    }
-
-    function showAll(allScores) {
-      var res = document.createTextNode(allScores);
-      return res;
-    }
-
-    function createTable(tableData, allScores) {
-      var table = document.getElementById("thisTable");
-      var tablediv = document.getElementById("tablediv");
-      var form = document.getElementById("feedbackform");
-      var tableBody = document.createElement("tbody");
-
-      tableData.forEach(function (rowData, index) {
-        var row = document.createElement("tr");
-        for (var i = 0; i < 4; i++) {
-          var cellData = rowData[i];
-          if (i == 1) {
-            switch (cellData) {
-              case "Star Rating":
-                var cell = document.createElement("td");
-                var stars = displayStars(rowData[2]);
-                cell.appendChild(stars);
-
-                break;
-              case "Text":
-                var cell = document.createElement("td");
-                cell.appendChild(document.createTextNode(rowData[2]));
-            }
-          } else if (i == 3) {
-            var cell = document.createElement("td");
-            cell.appendChild(document.createTextNode(cellData));
-          } else if (i == 0) {
-            var cell = document.createElement("td");
-            cell.appendChild(document.createTextNode(cellData));
-          }
-          row.appendChild(cell);
-        }
-        tableBody.appendChild(row);
-      });
-
-      table.appendChild(tableBody);
-
-      form.insertBefore(table, form.firstChild);
-
-      tablediv.appendChild(form);
-    }
-  </script>
+    <script src="{{ url_for('static', filename='js/liveFeedback.js') }}"></script>
   </head>
 
-  
+ 
+
+  <!-- https://stackoverflow.com/questions/15164655/generate-html-table-from-2d-javascript-array -->
+  <!-- https://stackoverflow.com/questions/61472018/how-do-i-convert-pythonflask-list-of-objects-to-js-list-of-objects -->
   <body>
     <div class="box header"><h2>Feedback System</h2></div>
     <br />
 
-    <div class="screenbox" id="tablediv">
+    <div class="screenbox" id="tablediv" width="600px">
       <h1>{{g.room_code}}</h1>
 
       <br />
-      <table id="thisTable">
+      <div id="tablediv">
+      <table id="thisTable" name="thisTable" width="350px">
         <caption>
           Feedback Form
         </caption>
@@ -105,6 +40,7 @@
           <th>Sentiment score</th>
         </tr>
       </table>
+      </div>
 
       <script>
         var entries = JSON.parse('{{ g.jdump|safe }}');
@@ -112,7 +48,6 @@
         console.log(entries);
         console.log(sentScores);
         createTable(entries, sentScores);
-        //console.log(entries);
       </script>
 
       <form action="/chart/{{g.room_code}}" class="centrecontent">
