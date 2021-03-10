@@ -300,7 +300,7 @@ class DBConnection:
 
         return questionAns
     
-    #...
+    #get sentiment score of feedback for questions of a given event along with the time that the feedback was submited
     def getAnswersDate(self, roomCode):
         #create connection to database
         conn = self.createConnection(self.database)
@@ -314,20 +314,24 @@ class DBConnection:
         questionAns = []
         nonCompounded= []
 
+        #loop through each question in feedback form for the given event
         for elem in conn.execute(getQuestionID,(roomCode,)):
             questionID = elem[0]
-
+            #loop through name and question type for each question
             for qs in conn.execute(getQuestions, (questionID,)):
                 question = qs[0]
                 type = qs[1]
-                
+                #loop through answers for the given question
                 for ans in conn.execute(getAnswers, (questionID,roomCode)):
                     answer = ans[0]
                     feedBackID = ans[1]
 
+                    #Get the time that this feedback was submited using the feedback's feedbackID
                     for stamp in conn.execute(getTimeStamp, (feedBackID,)):
                         timestamp = stamp[0]
 
+                    #The timestamp is translated from the date format used in the database into unix epoch which is more 
+                    #convinient for time comparisons
                     date_time_obj = datetime.datetime.strptime(timestamp, '%Y-%m-%d %H:%M:%S.%f')
                     timestamp = time.mktime(date_time_obj.timetuple())
 
