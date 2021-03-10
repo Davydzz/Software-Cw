@@ -6,10 +6,6 @@
         <script src="{{ url_for('static', filename='js/feedbackForm.js') }}"></script>
     </head>
 
-
-    <!-- https://stackoverflow.com/questions/17001961/how-to-add-drop-down-list-select-programmatically star rating drop down 28/02/2021 -->
-    <!-- https://stackoverflow.com/questions/15164655/generate-html-table-from-2d-javascript-array -->
-    <!-- https://stackoverflow.com/questions/61472018/how-do-i-convert-pythonflask-list-of-objects-to-js-list-of-objects -->
     <body>
         <div class="box header"><h2>Feedback System</h2></div>
         <br>
@@ -41,7 +37,14 @@
                 var entries = JSON.parse('{{ g.jdump|safe }}');
                 createTable(entries);
             </script>
+            <script>
+                var errors = '{{ g.feedbackresult }}';
+                if (errors != "") {
+                    alert(errors);
+                }
+            </script>
         </div>
+        
     </body>
 
 </html>
