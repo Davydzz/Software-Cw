@@ -10,7 +10,7 @@ Use the package manager [pip3](https://pip.pypa.io/en/stable/) to install NLTK.
 pip3 install nltk
 ```
 
-Install Flask as well
+Install Flask
 
 ```bash
 python -m pip install flask
