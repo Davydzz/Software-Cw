@@ -31,6 +31,14 @@ flask run
 
 ```
 
+or 
+
+```bash
+py -m flask run
+
+```
+
+
 Click on the provided to link to get redirected to the webpage.
 
 
