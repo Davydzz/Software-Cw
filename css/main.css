@@ -1,0 +1,206 @@
+
+body, html {
+    background-color: #f4f4f4;
+    
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 20px;
+
+    margin:0px;
+    padding:0px;
+    height: 100%;
+    width: 100%;
+}
+
+.box > h2 {
+    padding-left: 30px;
+    margin: 0px;
+    line-height: 60px;
+    font-family: 'Newsreader', serif;
+    font-weight: 600;
+}
+
+
+
+form {
+    text-align: center;
+}
+
+table {
+    width: 100%;
+}
+
+tr:hover {
+    background-color: rgb(242, 255, 252);
+}
+
+th {
+  background-color: rgb(242, 255, 252);
+}
+
+.screenbox {
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgb(255, 255, 255);
+    height: 400px;
+    width: fit-content;
+    border-radius: 30px;
+    box-shadow: 0px 10px 30px rgb(0 0 0 / 10%);
+    padding: 60px; 
+}
+
+.screenbox > h1 {
+    margin: 0px;
+    text-align: center;
+    font-size: 47px;
+
+}
+
+.form {
+    top: 55%;
+    position: relative;
+    transform: translateY(-50%);
+}
+
+form button, form .question label, form .question input {
+    -moz-transition: all 0.25s cubic-bezier(0.53, 0.01, 0.35, 1.5);
+    -o-transition: all 0.25s cubic-bezier(0.53, 0.01, 0.35, 1.5);
+    -webkit-transition: all 0.25s cubic-bezier(0.53, 0.01, 0.35, 1.5);
+    transition: all 0.25s cubic-bezier(0.53, 0.01, 0.35, 1.5);
+}
+
+.box {
+    background-color: rgb(255, 255, 255);
+    margin: auto;
+    position: fixed;
+    box-shadow: 0px 10px 30px rgb(0 0 0 / 10%);
+}
+
+.header{
+    width: 100%;
+    height:60px;
+}
+
+.centrecontent {
+   position:relative;
+   top:30%;
+}
+
+.button {
+    background-color: rgb(22, 204, 236);
+    margin-top: 20px;
+    border: none;
+    color: white;
+    padding: 12px 23px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    outline: none;
+    font-size: 14px;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 4px #999;
+}
+
+.button:hover {
+    background-color:rgb(18, 169, 196);
+}
+
+.button:active {
+    background-color: rgb(18, 169, 196);
+    box-shadow: 0 5px #666;
+    transform: translateY(4px);
+  }
+
+.textbox {
+    border: black 0.5px solid;
+    background-color: rgb(173, 235, 255);
+    margin: auto;
+    width: 60%;
+    text-align: center;
+}
+
+.inputBox {
+    width:95%;
+    white-space:normal;
+    text-align:left;
+    box-sizing: border-box;
+    margin: 8px 0;
+    font-size:35px;
+
+}
+
+.labelLogin {
+    font-size:20px;
+    font-weight: bold;
+    text-align:right;
+}
+
+
+/*====== Field Styling ======*/
+
+form .question {
+    position: relative;
+    padding: 10px 0;
+  }
+  form .question:first-of-type {
+    padding-top: 0;
+  }
+  form .question:last-of-type {
+    padding-bottom: 0;
+  }
+  form .question label {
+    transform-origin: left center;
+    color:  rgb(22, 204, 236);
+    font-weight: 100;
+    letter-spacing: 0.01em;
+    font-size: 17px;
+    box-sizing: border-box;
+    padding: 10px 15px;
+    display: block;
+    position: absolute;
+    margin-top: -40px;
+    z-index: 2;
+    pointer-events: none;
+  }
+  form .question input {
+    appearance: none;
+    background-color: none;
+    border: 1px solid  rgb(22, 204, 236);
+    line-height: 0;
+    font-size: 17px;
+    width: 100%;
+    display: block;
+    box-sizing: border-box;
+    padding: 10px 15px;
+    border-radius: 60px;
+    color:  rgb(22, 204, 236);
+    font-weight: 100;
+    letter-spacing: 0.01em;
+    position: relative;
+    z-index: 1;
+  }
+  form .question input:focus {
+    outline: none;
+    background:  rgb(22, 204, 236);
+    color: white;
+    margin-top: 30px;
+  }
+  form .question input:valid {
+    margin-top: 30px;
+  }
+  form .question input:focus ~ label {
+    -moz-transform: translate(0, -35px);
+    -ms-transform: translate(0, -35px);
+    -webkit-transform: translate(0, -35px);
+    transform: translate(0, -35px);
+  }
+  form .question input:valid ~ label {
+    text-transform: uppercase;
+    font-style: italic;
+    -moz-transform: translate(5px, -35px) scale(0.6);
+    -ms-transform: translate(5px, -35px) scale(0.6);
+    -webkit-transform: translate(5px, -35px) scale(0.6);
+    transform: translate(5px, -35px) scale(0.6);
+  }
