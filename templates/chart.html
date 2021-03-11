@@ -17,6 +17,8 @@
 
   <body>
 
+    <div class="box header"><h2>Feedback System</h2></div>
+
     <script
       src="https://unpkg.com/react@17/umd/react.development.js"
       crossorigin
@@ -36,19 +38,14 @@
 
 
                      <!--User picks what feedback they want displayed -->
-      Feedback Type
-      <form action="/action_page.php">
-        <input type="checkbox" id="checkbox1" name="checkbox1" value="overallFeedback">
-        <label for="checkbox1"> Overall Feedback</label><br>
-        <input type="checkbox" id="checkbox2" name="checkbox2" value="timePeriod">
-        <label for="checkbox2"> Feedback over last specified time period</label><br>
-      </form>
+      <br>
+
 
 
        <!-- User can select the time period from which they can see feedback -->
-      <div style="border: 1px solid #000000;">
+      <!--<div style="border: 1px solid #000000;"> -->
 
-      Show feedback for the last
+      <b>Show feedback for the last</b>
       <form  id="time" onchange="document.location.href = 'page.php?var=' + minutes + hours">
         <label for="hour">hours:</label><br>
         <input type="text" id="hour" name="hour" value=""><br>
@@ -58,7 +55,7 @@
       </form>
 
       </div>
-    </div>
+    <!-- </div> -->
 
 
       <script src="https://www.gstatic.com/charts/loader.js"></script>
