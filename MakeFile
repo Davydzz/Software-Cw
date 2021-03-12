@@ -1,0 +1,6 @@
+install:
+    python3 -m pip install nltk
+    python3 -m pip install flask
+    python createDB.py
+run:
+   python3 -m flask run
