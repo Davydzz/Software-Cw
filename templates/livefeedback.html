@@ -17,17 +17,19 @@
     <script src="{{ url_for('static', filename='js/liveFeedback.js') }}"></script>
   </head>
 
+ 
 
+  <!-- https://stackoverflow.com/questions/15164655/generate-html-table-from-2d-javascript-array -->
+  <!-- https://stackoverflow.com/questions/61472018/how-do-i-convert-pythonflask-list-of-objects-to-js-list-of-objects -->
   <body>
     <div class="box header"><h2>Feedback System</h2></div>
     <br />
 
-    <div class="screenbox" id="tablediv" width="600px">
+    <div class="screenbox" id="tablediv">
       <h1>{{g.room_code}}</h1>
 
-      <br />
-      <div id="tablediv">
-      <table id="thisTable" name="thisTable" width="350px">
+      <br>
+      <table id="thisTable">
         <caption>
           Feedback Form
         </caption>
@@ -37,7 +39,6 @@
           <th>Sentiment score</th>
         </tr>
       </table>
-      </div>
 
       <script>
         var entries = JSON.parse('{{ g.jdump|safe }}');
