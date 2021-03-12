@@ -13,7 +13,7 @@ pip3 install nltk
 Install Flask
 
 ```bash
-python -m pip install flask
+pip3 install flask
 ```
 
 ## Running
