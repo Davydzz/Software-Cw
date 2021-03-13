@@ -7,7 +7,8 @@
       href="{{ url_for('static',filename='styles/main.css') }}"
       type="text/css"
     />
-
+    <link rel="stylesheet" href="../css/main.css" type="text/css">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:wght@200&display=swap" rel="stylesheet">
     <!-- Font Awesome Icon Library -->
     <link
       rel="stylesheet"
@@ -30,7 +31,7 @@
 
 
        <!-- Pie charts displayed here -->
-    <div class="screenbox">
+    <div class="screenbox" style="height: 700px;">
               <h1>{{g.room_code}}</h1>
             
               <div style="width: 600px; display: table-cell;" id="averageMood"> Left </div>
@@ -51,7 +52,7 @@
         <input type="text" id="hour" name="hour" value=""><br>
         <label for="minute">minutes:</label><br>
         <input type="text" id="minute" name="minute" value=""><br><br>
-        <input type="submit" value="Submit">
+        <input type="submit" value="SUBMIT" class="button">
       </form>
 
       </div>
