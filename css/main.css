@@ -287,3 +287,7 @@ form .question {
     width:100% !important;
   }
 }
+
+.checked {
+  color: orange;
+}
