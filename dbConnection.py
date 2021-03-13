@@ -60,7 +60,7 @@ class DBConnection:
             conn.commit()
             return True,id
 
-       #add user's response for feedback questions to the database
+    #add user's response for feedback questions to the database
     def addFeedbackQuestion(self, questionID, feedbackID, answer, room, user):
         #create connection to database
         conn = self.createConnection(self.database)
@@ -207,13 +207,11 @@ class DBConnection:
     def addTemplate(self, result, templateName):
         #create connection to database
         conn = self.createConnection(self.database)
-        #added templateName to differenciate in the drop down menu
-        addFeedbackForm = ("""INSERT INTO FeedbackForm(templateName) VALUES (?);""")
-        
+        addFeedbackForm = ("""INSERT INTO FeedbackForm(templateName, overallSentiment) VALUES (?,?);""")
         addQuestion = ("INSERT INTO Question(questionNumber, type, content, feedbackFormID) VALUES (?,?,?,?);")
 
-        feedbackID = -1
-        conn.execute(addFeedbackForm, (templateName,))
+        #add template feedback form to database
+        conn.execute(addFeedbackForm, (templateName, 0))
         id = conn.execute('select last_insert_rowID();')
         id = id.fetchone()
         feedbackID = id[0]
@@ -302,7 +300,7 @@ class DBConnection:
 
         return questionAns
     
-    #get sentiment score of feedback for questions of a given event along with the time that the feedback was submited
+   #get sentiment score of feedback for questions of a given event along with the time that the feedback was submited
     def getAnswersDate(self, roomCode):
         #create connection to database
         conn = self.createConnection(self.database)

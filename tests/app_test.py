@@ -36,21 +36,3 @@ def testUsers(userRows):
 
             assert db.addUser(salt, hashedPassword, elem[0], elem[1], elem[2]) == True
 
-
-def testWrongPassword(userRows):
-    global db
-    for elem in userRows:
-        assert db.confirmLogin(userRows[2],userRows[3]) == True
-
-
-def checkCharacters():
-    global db
-    # Check that it works for apostrophes and question marks
-    nested = [['Check', 'Text']['How\'s it going?', 'Text']]
-    assert db.addTemplate(nested, "test") == True
-
-    moreTests = [['	\.\*\+\?    \$\^\/\\	.*+?    $^/\'', 'Text']]
-    assert db.addTemplate(moreTests, "test2") == True
-    
-
-

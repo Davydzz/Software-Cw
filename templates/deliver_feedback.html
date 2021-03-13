@@ -2,7 +2,10 @@
 <html lang="en">
     <head>
         <title>Feedback System</title>
+        <link rel="stylesheet" href="../css/main.css" type="text/css">
+        <script src="https://cdn.lordicon.com/libs/frhvbuzj/lord-icon-2.0.2.js"></script>
         <link rel="stylesheet" href="{{ url_for('static',filename='styles/main.css') }}" type="text/css">
+        <link href="https://fonts.googleapis.com/css2?family=Newsreader:wght@200&display=swap" rel="stylesheet">
         <script src="{{ url_for('static', filename='js/feedbackForm.js') }}"></script>
     </head>
 
@@ -10,12 +13,26 @@
         <div class="box header"><h2>Feedback System</h2></div>
         <br>
 
-        <div class="screenbox" id="tablediv">
-            <h1>{{g.room_code}}</h1>
+        <div class="screenbox" id="tablediv" style="width: 300px;">
+            <h3 style="text-align: center;">
+
+               
+                <lord-icon
+                    src="https://cdn.lordicon.com/wloilxuq.json"
+                    trigger="loop"
+                    colors="primary:#121331,secondary:#16ccec"
+                    style="width:60px;height:60px">
+                </lord-icon>
+                <br>
+                {{g.room_code}}
+            
+            </h3>
+
+    
           
             <form method="post" id="feedbackform" class="form">
                 <table id="thisTable">
-                    <caption>Feedback Form</caption>
+                    <caption style="font-weight: 900; color: #16ccec; font-size: 20px;">Feedback Form</caption>
                     <tr>
                         <th></th>
                         <th>Question</th>
@@ -30,7 +47,7 @@
                     <option value="True">Feedback is Anonymous</option>
                 </select>
                 <br>
-                <input type="submit" value="Submit" class="button" />
+                <input type="submit" value="SUBMIT" class="button" />
             </form>
 
             <script>
@@ -38,13 +55,12 @@
                 createTable(entries);
             </script>
             <script>
-                var errors = '{{ g.feedbackresult }}';
-                if (errors != "") {
-                    alert(errors);
+                var feedbackresult = '{{ g.feedbackresult }}';
+                if (feedbackresult != "") {
+                    alert(feedbackresult);
                 }
             </script>
         </div>
-        
     </body>
 
 </html>

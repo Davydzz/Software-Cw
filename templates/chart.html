@@ -1,182 +1,180 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <title>Deliver Feedback</title>
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static',filename='styles/main.css') }}"
-      type="text/css"
-    />
 
-    <!-- Font Awesome Icon Library -->
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
-    />
-  </head>
+<head>
+  <title>Deliver Feedback</title>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:wght@200&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static',filename='styles/main.css') }}" type="text/css" />
+  <script src="https://cdn.lordicon.com/libs/frhvbuzj/lord-icon-2.0.2.js"></script>
 
-  <body>
+  <!-- Font Awesome Icon Library -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
 
-    <div class="box header"><h2>Feedback System</h2></div>
+</head>
 
-    <script
-      src="https://unpkg.com/react@17/umd/react.development.js"
-      crossorigin
-    ></script>
-    <script
-      src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
-      crossorigin
-    ></script>
+<body>
+  <div class="box header"><h2>Feedback System</h2></div>
+  <!-- Pie charts displayed here -->
+  <div class="screenbox">
+    <h3 style="text-align: center;">
+    
+    <lord-icon
+        src="https://cdn.lordicon.com/gqdnbnwt.json"
+        trigger="loop"
+        colors="primary:#121331,secondary:#16ccec"
+        style="width:60px;height:60px">
+    </lord-icon>
+    <br>
+    CHARTS FOR
+    <br>
+    {{g.room_code}}
+    
+    </h3>
+    
 
-
-       <!-- Pie charts displayed here -->
-    <div class="screenbox">
-              <h1>{{g.room_code}}</h1>
-            
-              <div style="width: 600px; display: table-cell;" id="averageMood"> Left </div>
-              <div style="display: table-cell;" id="averageRating"> Right </div>
-
-
-                     <!--User picks what feedback they want displayed -->
-      <br>
+    <div style="width: 600px; display: table-cell;" id="averageMood"> Left </div>
+    <div style="display: table-cell;" id="averageRating"> Right </div>
 
 
+    <!--User picks what feedback they want displayed -->
+    Feedback Type
+    <form action="/action_page.php">
+      <input type="checkbox" id="checkbox1" name="checkbox1" value="overallFeedback">
+      <label for="checkbox1"> Overall Feedback</label><br>
+      <input type="checkbox" id="checkbox2" name="checkbox2" value="timePeriod">
+      <label for="checkbox2"> Feedback over last specified time period</label><br>
+    </form>
 
-       <!-- User can select the time period from which they can see feedback -->
-      <!--<div style="border: 1px solid #000000;"> -->
 
-      <b>Show feedback for the last</b>
-      <form  id="time" onchange="document.location.href = 'page.php?var=' + minutes + hours">
+    <!-- User can select the time period from which they can see feedback -->
+    <div style="border: 1px solid #000000;">
+
+      Show feedback for the last
+      <form id="time" onchange="document.location.href = 'page.php?var=' + minutes + hours">
         <label for="hour">hours:</label><br>
         <input type="text" id="hour" name="hour" value=""><br>
         <label for="minute">minutes:</label><br>
         <input type="text" id="minute" name="minute" value=""><br><br>
-        <input type="submit" value="Submit">
+        <input type="submit" value="SUBMIT" class="button">
       </form>
 
-      </div>
-    <!-- </div> -->
+    </div>
+  </div>
 
 
-      <script src="https://www.gstatic.com/charts/loader.js"></script>
+  <script src="https://www.gstatic.com/charts/loader.js"></script>
 
 
-      <script>
-      // Load google charts
-      google.charts.load('current', {'packages':['corechart']});
-      google.charts.setOnLoadCallback(drawChart);
+  <script>
+    // Load google charts
+    google.charts.load('current', { 'packages': ['corechart'] });
+    google.charts.setOnLoadCallback(drawChart);
 
 
-      // Draw the chart and set the chart values from the database
-      function drawChart() {
+    // Draw the chart and set the chart values from the database
+    function drawChart() {
 
-        var entries = JSON.parse('{{ g.jdump|safe }}');
-        var one = 0;
-        var two = 0;
-        var three = 0;
-        var four = 0;
-        var five = 0;
+      var entries = JSON.parse('{{ g.jdump|safe }}');
+      var one = 0;
+      var two = 0;
+      var three = 0;
+      var four = 0;
+      var five = 0;
 
-        var number = 0;
-        var totalStars = 0;
-
-
-
-        for(var index = 0; index < entries.length; index++) {
-          
+      var number = 0;
+      var totalStars = 0;
 
 
 
-
-          const urlParams = new URLSearchParams(window.location.search);
-          const userMinutes = urlParams.get('minute');
-          const userHours = urlParams.get('hour');
-
-
-          if (userMinutes == null || (userMinutes == '' && userHours == '') || userHours == null  ||
-            isNaN(userMinutes) || isNaN(userHours)){
-
-            if (entries[index][1] == 'Star Rating'){
+      for (var index = 0; index < entries.length; index++) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const userMinutes = urlParams.get('minute');
+        const userHours = urlParams.get('hour');
 
 
+        if (userMinutes == null || (userMinutes == '' && userHours == '') || userHours == null ||
+          isNaN(userMinutes) || isNaN(userHours)) {
 
-              number = number + 1;
-              totalStars = totalStars + parseInt(entries[index][2]);
+          if (entries[index][1] == 'Star Rating') {
+            number = number + 1;
+            totalStars = totalStars + parseInt(entries[index][2]);
 
 
-              if (entries[index][2] == '1'){
-                one += 1;
-              }
-
-              if (entries[index][2] == '2'){
-                two += 1;
-              }
-
-              if (entries[index][2] == '3'){
-                three += 1;
-              }
-
-              if (entries[index][2] == '4'){
-                four += 1;
-              }
-
-              if (entries[index][2] == '5'){
-                five += 1;
-              }
+            if (entries[index][2] == '1') {
+              one += 1;
             }
+
+            if (entries[index][2] == '2') {
+              two += 1;
+            }
+
+            if (entries[index][2] == '3') {
+              three += 1;
+            }
+
+            if (entries[index][2] == '4') {
+              four += 1;
+            }
+
+            if (entries[index][2] == '5') {
+              five += 1;
+            }
+
+          }
+        }
+
+
+        else {
+          var seconds = new Date() / 1000;
+
+          if (userHours == '') {
+            seconds = seconds - (userMinutes * 60);
+          }
+          else if (userMinutes == '') {
+            seconds = seconds - (userHours * 3600);
+          }
+          else {
+            seconds = seconds - (userMinutes * 60);
+            seconds = seconds - (userHours * 3600);
           }
 
 
-          else{
-            var seconds = new Date() / 1000;
+          if (entries[index][1] == 'Star Rating' && entries[index][4] >= seconds) {
 
-            if (userHours == ''){
-              seconds = seconds - (userMinutes * 60);
-            }
-            else if (userMinutes == ''){
-              seconds = seconds - (userHours * 3600);
-            }
-            else{
-              seconds = seconds - (userMinutes * 60);
-              seconds = seconds - (userHours * 3600);
+            number = number + 1;
+            totalStars = totalStars + parseInt(entries[index][2]);
+
+
+            if (entries[index][2] == '1') {
+              one = one + 1;
             }
 
-
-            if (entries[index][1] == 'Star Rating' && entries[index][4] >= seconds){
-
-              number = number + 1;
-              totalStars = totalStars + parseInt(entries[index][2]);
-
-
-              if (entries[index][2] == '1'){
-                one = one + 1;
-              }
-
-              if (entries[index][2] == '2'){
-                two = two + 1;
-              }
-
-              if (entries[index][2] == '3'){
-                three = three + 1;
-              }
-
-              if (entries[index][2] == '4'){
-                four = four + 1;
-              }
-
-              if (entries[index][2] == '5'){
-                five = five + 1;
-              }             
+            if (entries[index][2] == '2') {
+              two = two + 1;
             }
-          } 
+
+            if (entries[index][2] == '3') {
+              three = three + 1;
+            }
+
+            if (entries[index][2] == '4') {
+              four = four + 1;
+            }
+
+            if (entries[index][2] == '5') {
+              five = five + 1;
+            }
+          }
         }
 
-        var averageStars = totalStars/number;
+      }
 
-        var averageStars = averageStars.toString();
+      var averageStars = totalStars / number;
+
+      var averageStars = averageStars.toString();
 
 
-        var data = google.visualization.arrayToDataTable([
+      var data = google.visualization.arrayToDataTable([
         ['Rating', 'Frequency'],
         ['☆', one],
         ['☆☆', two],
@@ -185,121 +183,70 @@
         ['☆☆☆☆☆', five]
       ]);
 
-        // Title and the width and height of the chart average rating taken from the database
-        averageStars = averageStars.substring(0,6);
-        var options = {'title':'Average Rating ' + averageStars, 'width':550, 'height':400};
+      // Title and the width and height of the chart average rating taken from the database
+      averageStars = averageStars.substring(0, 6);
+      var options = { 'title': 'Average Rating ' + averageStars, 'width': 550, 'height': 400 };
 
-        // Display the chart inside the <div> element with id="piechart"
-        var chart = new google.visualization.PieChart(document.getElementById('averageRating'));
-        chart.draw(data, options);
+      // Display the chart inside the <div> element with id="piechart"
+      var chart = new google.visualization.PieChart(document.getElementById('averageRating'));
+      chart.draw(data, options);
+    }
+  </script>
+
+  <script>
+    // Load google charts
+    google.charts.load('current', { 'packages': ['corechart'] });
+    google.charts.setOnLoadCallback(drawChart2);
+
+
+    // Draw the chart and set the chart values
+    function drawChart2() {
+
+      var entries = JSON.parse('{{ g.compDump|safe }}');
+      var compoundedScores = JSON.parse('{{ g.jdump|safe }}');
+
+      var positive = 0;
+      var negative = 0;
+      var neutral = 0;
+
+      var number = 0;
+      var totalScore = 0;
+
+      for (var index = 0; index < entries.length; index++) {
+
+        positive += entries[index].pos;
+        negative += entries[index].neg;
+        neutral += entries[index].neu;
       }
-      </script>
 
-      <script>
-      // Load google charts
-      google.charts.load('current', {'packages':['corechart']});
-      google.charts.setOnLoadCallback(drawChart2);
+      for (var index = 0; index < compoundedScores.length; index++) {
+        totalScore += compoundedScores[index][3];
 
-
-      // Draw the chart and set the chart values
-      function drawChart2() {
-
-        var entries = JSON.parse('{{ g.compDump|safe }}');
-        var compoundedScores = JSON.parse('{{ g.jdump|safe }}');
-
-        var positive = 0;
-        var negative = 0;
-        var neutral = 0;
-
-        var number = 0;
-        var totalScore = 0;
-
-        //get
-        const urlParams = new URLSearchParams(window.location.search);
-        const userMinutes = urlParams.get('minute');
-        const userHours = urlParams.get('hour');
-
-
-        if (userMinutes == null || (userMinutes == '' && userHours == '') || userHours == null  ||
-            isNaN(userMinutes) || isNaN(userHours)){
-
-          for (var index = 0; index < entries.length; index++) {
-            
-            positive += entries[index].pos;
-            negative += entries[index].neg;
-            neutral += entries[index].neu;
-
-          }
-
-          for (var index = 0; index < compoundedScores.length; index++) {
-              totalScore += compoundedScores[index][3];
-              
-              if (compoundedScores[index][1] == 'Text'){
-                number++;
-              }
-          }
-
+        if (compoundedScores[index][1] == 'Text') {
+          number++;
         }
+      }
 
-        else{
+      var averageScore = (totalScore / number).toString();
 
-          var seconds = new Date() / 1000;
-
-          if (userHours == ''){
-            seconds = seconds - (userMinutes * 60);
-          }
-          else if (userMinutes == ''){
-            seconds = seconds - (userHours * 3600);
-          }
-          else{
-            seconds = seconds - (userMinutes * 60);
-            seconds = seconds - (userHours * 3600);
-          }
-
-
-
-          
-
-          for (var index = 0; index < entries.length; index++) {
-            if (compoundedScores[index][1] == 'Text' && compoundedScores[index][4] >= seconds){
-              positive += entries[index].pos;
-              negative += entries[index].neg;
-              neutral += entries[index].neu;
-            }
-          }
-
-          for (var index = 0; index < compoundedScores.length; index++) {
-            if (compoundedScores[index][1] == 'Text' && compoundedScores[index][4] >= seconds){
-              totalScore += compoundedScores[index][3];
-                
-              if (compoundedScores[index][1] == 'Text'){
-                number++;
-              }
-            }
-          }
-        }
-
-
-
-        var averageScore = (totalScore/number).toString();
-
-        var data = google.visualization.arrayToDataTable([
+      var data = google.visualization.arrayToDataTable([
         ['Mood', 'Frequency'],
         ['Positive', positive],
         ['Neutral', neutral],
         ['Negative', negative]
-        ]);
+      ]);
 
-        // title and the width and height of the chart average mood displayed from database
-        averageScore = averageScore.substring(0,6);
-        var options = {'title':'Average Mood ' + averageScore, 'width':550, 'height':400};
+      // title and the width and height of the chart average mood displayed from database
+      averageScore = averageScore.substring(0, 6);
+      var options = { 'title': 'Average Mood ' + averageScore, 'width': 550, 'height': 400 };
 
 
 
-        // Display the chart inside the <div> element with id="piechart"
-        var chart = new google.visualization.PieChart(document.getElementById('averageMood'));
-        chart.draw(data, options);
-      }
-      </script>
-  </body>
-</html> 
+      // Display the chart inside the <div> element with id="piechart"
+      var chart = new google.visualization.PieChart(document.getElementById('averageMood'));
+      chart.draw(data, options);
+    }
+  </script>
+</body>
+
+</html>

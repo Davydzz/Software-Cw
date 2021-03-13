@@ -3,8 +3,9 @@
 
 <head>
 	<link rel="stylesheet" href="{{ url_for('static',filename='styles/main.css') }}" type="text/css">
+	<link href="https://fonts.googleapis.com/css2?family=Newsreader:wght@200&display=swap" rel="stylesheet">
 	<title> Add/Remove Questions on Form</title>
-
+	<script src="https://cdn.lordicon.com/libs/frhvbuzj/lord-icon-2.0.2.js"></script>
 	<script src="{{ url_for('static', filename='js/createTemplate.js') }}"></script>
 </head>
 
@@ -14,37 +15,56 @@
 	</div>
 	<br>
 
-	<div class="screenbox">
-		<h1>Add/Remove Questions on Feedback Form</h1>
+	<div class="screenbox" style="height: 500px">
 		<form class="form" method="post">
+			<h3>
+				<lord-icon
+					src="https://cdn.lordicon.com/nocovwne.json"
+					trigger="loop"
+					colors="primary:#121331,secondary:#16ccec"
+					style="width:60px;height:60px">
+				</lord-icon>
+				<br>
+				ADD/REMOVE QUESTIONS <br> ON FEEDBACK FORM</h3>
 
 			<div class="question">
-				<input type="text" placeholder="Enter Template Name" style="font-size:35px" name="templateName"
-					class="centreButton"><br><br>
+				<input type="text" name="templateName" required/>
+				<label>Enter Template Name</label>
 			</div>
 
-			<input type="button" class="button" value="Add Question" onclick="addRow('dataTable')" />
-			<input type="button" class="button" value="Delete Question" onclick="deleteRow('dataTable')" />
+			<input type="button" class="button" value="ADD QUESTION" style="font-size: 11.5px; padding: 12px 10px !important;" onclick="addRow('dataTable')" />
+			<input type="button" class="button" value="DELETE QUESTION" style="font-size: 11.5px; padding: 12px 10px;" onclick="deleteRow('dataTable')" />
 			<br><br>
 
 			<table id="dataTable">
 				<tr>
-					<td><input type="checkbox" name="chk" /></td>
-					<td><input type="text" name="txt" /></td>
+					
+					<td><input type="checkbox" name="chk" style="top:45%;left:45%;position:relative;transform: translate(-50%,-50%);"/></td>
 					<td>
-						<select name="questionType">
-							<option value="blank"> -- Select an Option -- </option>
-							<option value="Star Rating">Star Rating</option>
-							<option value="Text">Text</option>
-						</select>
-					</TD>
+					<div class="question">
+						<input type="text" name="txt" required/>
+						<label>Question text</label>
+					</div>
+					</td>
+						
+			
+					<td>
+						<div class="custom-select" style="width:250px;">
+							<select name="questionType">
+								<option value="blank"> -- Select an Option -- </option>
+								<option value="Star Rating">Star Rating</option>
+								<option value="Text">Text</option>
+							</select>
+						</div>
+					<td>
 				</tr>
 			</table>
 
 			<br>
-			<input type="submit" value="Create Form" class="button" />
+			<input type="submit" value="CREATE FORM" style="margin-top:70px;" class="button" />
 		</form>
 	</div>
 </body>
+
 
 </html>

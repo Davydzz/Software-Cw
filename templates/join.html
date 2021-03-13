@@ -2,17 +2,39 @@
 <html lang="en">
     <head>
         <title>Feedback System</title>
+        <link rel="stylesheet" href="../css/main.css" type="text/css">
         <link rel="stylesheet" href="{{ url_for('static',filename='styles/main.css') }}" type="text/css">
         <link href="https://fonts.googleapis.com/css2?family=Newsreader:wght@200&display=swap" rel="stylesheet">
+
+        <script src="https://cdn.lordicon.com/libs/frhvbuzj/lord-icon-2.0.2.js"></script>
     </head>
 
     <body>
         <div class="box header"><h2>Feedback System</h2></div>
         <br>
 
-        <div class="screenbox">
+        <div class="screenbox" style="height: 250px;">
+
             <form class="form" method="post">
-                <input type="text" value="" placeholder="Enter Event Code" style="font-size:24px" class="button" name="roomCode">
+                <h3>
+                    <lord-icon
+                            src="https://cdn.lordicon.com/dtgezzsi.json"
+                            trigger="loop"
+                            colors="primary:#121331,secondary:#16ccec"
+                            style="width:60px;height:60px">
+                    </lord-icon>
+                    <br>
+                    JOIN AN EVENT
+                </h3>
+                
+                <div class="question">
+                    
+                    <input type="text" name="roomCode" required/>
+                    <label>
+                        Enter Event Code</label>
+                </div>
+                <br>
+                <input type="submit" value="JOIN" class="button">
             </form>
         </div>
     </body>

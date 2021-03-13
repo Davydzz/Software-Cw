@@ -2,6 +2,7 @@
 <html lang="en">
     <head>
         <title>Feedback System</title>
+        <script src="https://cdn.lordicon.com/libs/frhvbuzj/lord-icon-2.0.2.js"></script>
         <link rel="stylesheet" href="{{ url_for('static',filename='styles/main.css') }}" type="text/css">
         <link href="https://fonts.googleapis.com/css2?family=Newsreader:wght@200&display=swap" rel="stylesheet">
         <script src="{{ url_for('static', filename='js/viewEvents.js') }}"></script>
@@ -9,13 +10,25 @@
 
     <body>
         <div class="box header"><h2>Feedback System</h2></div>
-        <br>
 
-        <div class="screenbox" id="tablediv">
-            <br>
-            <br>
+        <div class="screenbox" id="tablediv" style="width: 500px; height: 500px;">
+            <h3 style="text-align: center;">
 
-            <h1>{{g.user.username}}'s Profile</h1>
+         
+                <lord-icon
+                    src="https://cdn.lordicon.com/ssdupzsv.json"
+                    trigger="loop"
+                    colors="primary:#121331,secondary:#16ccec"
+                    style="width:60px;height:60px">
+                </lord-icon>
+                <br>
+                PROFILE
+                <br>
+                {{g.user.username}}
+                
+            </h3>
+
+
 
             <form method="post" id="eventform" class="">
                 <table id="thisTable">
@@ -35,14 +48,14 @@
             </script>
 
             <form action="create" class = "centrecontent">
-                <input type="submit" value="Create Event" style="font-size:35px" class="button">
+                <input type="submit" value="CREATE EVENT" class="button">
             </form>
 
             <br>
             <br>
 
             <form action="join" class = "centrecontent">
-                <input type="submit" value="Join Event" style="font-size:35px" class="button">
+                <input type="submit" value="JOIN EVENT" class="button">
             </form>
         </div>
 

@@ -2,34 +2,45 @@
 <html lang="en">
     <head>
         <title>Feedback System</title>
+        <link rel="stylesheet" href="../css/main.css" type="text/css">
         <link rel="stylesheet" href="{{ url_for('static',filename='styles/main.css') }}" type="text/css">
         <link href="https://fonts.googleapis.com/css2?family=Newsreader:wght@200&display=swap" rel="stylesheet">
-
+        <script src="https://cdn.lordicon.com/libs/frhvbuzj/lord-icon-2.0.2.js"></script>
     </head>
 
     <body>
         <div class="box header"><h2>Feedback System</h2></div>
         <br>
 
-        <div class="screenbox">
+        <div class="screenbox" style="height: 350px; width: 270px;">
+            
+            <h3 style="text-align: center;">
 
-            <h1>
-                Main Page
-            </h1>
+                <lord-icon
+                    src="https://cdn.lordicon.com/jvucoldz.json"
+                    trigger="loop"
+                    colors="primary:#121331,secondary:#16ccec"
+                    style="width:60px;height:60px">
+                </lord-icon>
+                <br>
+                MAIN PAGE
+            </h3>
 
             <br><br><br>
 
             <form action="login">
-                <input type="submit" value="Login" style="font-size:35px" class="button">
+                <input type="submit" value="LOGIN" class="button">
             </form>
 
             <form action="register">
-                <input type="submit" value="Register" style="font-size:35px" class="button">
+                <input type="submit" value="REGISTER"  class="button">
             </form>
 
             <form action="join">
-                <input type="submit" value="Continue as Guest" style="font-size:35px" class="button">
+                <input type="submit" value="CONTINUE AS GUEST"  class="button">
             </form>
+
+
         </div>
 
     </body>

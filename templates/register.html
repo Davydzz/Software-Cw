@@ -2,19 +2,28 @@
 <html lang="en">
     <head>
         <title>Feedback System</title>
+        <link rel="stylesheet" href="../css/main.css" type="text/css">
         <link rel="stylesheet" href="{{ url_for('static',filename='styles/main.css') }}" type="text/css">
+        <script src="https://cdn.lordicon.com/libs/frhvbuzj/lord-icon-2.0.2.js"></script>
         <link href="https://fonts.googleapis.com/css2?family=Newsreader:wght@200&display=swap" rel="stylesheet">
     </head>
 
     <body>
-        <div class="box header"><h2>Register</h2></div>
+        <div class="box header"><h2>System Feedback</h2></div>
         <br>
 
 
-        <div class="screenbox">
-            <h1>
-                Register Portal
-            </h1>
+        <div class="screenbox" style="height: 520px;">
+            <h3 style="text-align: center;">
+                <lord-icon
+                    src="https://cdn.lordicon.com/wcjauznf.json"
+                    trigger="loop"
+                    colors="primary:#16ccec,secondary:#000000"
+                    style="width:60px;height:60px">
+                </lord-icon>
+                <br>
+                REGISTER PORTAL
+            </h3>
 
             <form method="post" class="form">
                 <div class="question">
@@ -38,7 +47,7 @@
                     <label>Confirm Password: </label>
                 </div>
 
-                <input type="submit" value="Register" class="button">
+                <input type="submit" value="REGISTER" class="button">
             </form>
         </div>
     </body>
