@@ -68,14 +68,14 @@ class DBConnection:
             cur = conn.cursor()
             checkIfAddedBefore= ("SELECT feedbackID FROM feedback WHERE userID = ? AND roomcode = ?;")
             insertStatement =  ("INSERT INTO feedbackQuestions (questionID, feedbackID, answer) VALUES (?, ?, ?);" )
-            updateAnswer = ("UPDATE feedbackQuestions SET answer = ? WHERE feedbackID = ? AND questionID = ?;")
+            updateAnswer = ("UPDATE feedbackQuestions SET answer = ? WHERE feedbackID = ?;")
             #check if the user has submitted feedback for this event already
             cur.execute(checkIfAddedBefore, (user,room))
             possibleBefore = cur.fetchall()
             #if the user has submitted at least one feedback for the event already
             if len(possibleBefore) > 1:
                 #update their feedback in the database
-                conn.execute(updateAnswer, (answer, possibleBefore[0][0], questionID))
+                conn.execute(updateAnswer, (answer, possibleBefore[0][0]))
             else:
                 #add their feedback to the database
                 conn.execute(insertStatement, (questionID, feedbackID, answer))
@@ -300,7 +300,7 @@ class DBConnection:
 
         return questionAns
     
-   #get sentiment score of feedback for questions of a given event along with the time that the feedback was submited
+    #get sentiment score of feedback for questions of a given event along with the time that the feedback was submited
     def getAnswersDate(self, roomCode):
         #create connection to database
         conn = self.createConnection(self.database)
