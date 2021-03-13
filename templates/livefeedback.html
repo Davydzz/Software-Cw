@@ -7,7 +7,8 @@
       href="{{ url_for('static',filename='styles/main.css') }}"
       type="text/css"
     />
-
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:wght@200&display=swap" rel="stylesheet">
+    <script src="https://cdn.lordicon.com/libs/frhvbuzj/lord-icon-2.0.2.js"></script>
     <!-- Font Awesome Icon Library -->
     <link
       rel="stylesheet"
@@ -18,6 +19,7 @@
         color: orange;
       }
     </style>
+    <link rel="stylesheet" href="../css/main.css" type="text/css">
   </head>
 
   <script>
@@ -92,14 +94,26 @@
     <div class="box header"><h2>Feedback System</h2></div>
     <br />
 
-    <div class="screenbox" id="tablediv" width="600px">
-      <h1>{{g.room_code}}</h1>
+    <div class="screenbox" id="tablediv" width="600px" style="height: 450px;">
+   
+    <br>
+      <h3 style="text-align: center;">
+          <lord-icon
+            src="https://cdn.lordicon.com/tyounuzx.json"
+            trigger="loop"
+            colors="primary:#121331,secondary:#16ccec"
+            style="width:60px;height:60px; text-align: center;">
+           </lord-icon>
+          <br>
+          {{g.room_code}}
+        </h3>
 
       <br />
       <table id="thisTable" name="thisTable" width="350px">
-        <caption>
+        <caption style="font-weight: 900; color: #16ccec; font-size: 20px;">
           Feedback Form
         </caption>
+        <br>
         <tr>
           <th>Question</th>
           <th>Feedback</th>
@@ -119,8 +133,7 @@
       <form action="/chart/{{g.room_code}}" class="centrecontent">
         <input
           type="submit"
-          value="See visualisation"
-          style="font-size: 35px"
+          value="SEE VISUALISATION"
           class="button"
         />
       </form>

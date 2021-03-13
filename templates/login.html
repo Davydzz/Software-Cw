@@ -2,6 +2,8 @@
 <html lang="en">
     <head>
         <title>Feedback System</title>
+        <script src="https://cdn.lordicon.com/libs/frhvbuzj/lord-icon-2.0.2.js"></script>
+        <link rel="stylesheet" href="../css/main.css" type="text/css">
         <link rel="preconnect" href="https://fonts.gstatic.com">
         <link href="https://fonts.googleapis.com/css2?family=Newsreader:wght@200&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="{{ url_for('static',filename='styles/main.css') }}" type="text/css">
@@ -11,13 +13,21 @@
         <div class="box header"><h2>Feedback System</h2></div>
         <br>
 
-        <div class="screenbox">
+        <div class="screenbox" style="height: 300px;">
             
-            <h1>
-                Login Portal
-            </h1>
+            
 
             <form class="form" method="post">
+                <h3>
+                <lord-icon
+                    src="https://cdn.lordicon.com/dxjqoygy.json"
+                    trigger="loop"
+                    colors="primary:#121331,secondary:#16ccec"
+                    style="width:60px;height:60px">
+                </lord-icon>
+                <br>
+                    LOGIN
+                </h3>
                 <div class="question">
                     <input type="text" name="username" required/>
                     <label>Username</label>
@@ -26,7 +36,7 @@
                     <input type="password" name="password" required/>
                     <label>Password</label>
                 </div>
-                <input type="submit" value="Login" class="button">
+                <input type="submit" value="LOGIN" class="button">
             </form>
 
         </div>

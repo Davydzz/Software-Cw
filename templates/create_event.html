@@ -3,6 +3,8 @@
 
 <head>
     <title>Feedback System</title>
+    <link rel="stylesheet" href="../css/main.css" type="text/css">
+    <script src="https://cdn.lordicon.com/libs/frhvbuzj/lord-icon-2.0.2.js"></script>
     <link rel="stylesheet" href="{{ url_for('static',filename='styles/main.css') }}" type="text/css">
     <link href="https://fonts.googleapis.com/css2?family=Newsreader:wght@200&display=swap" rel="stylesheet">
 </head>
@@ -13,14 +15,27 @@
     </div>
     <br>
 
-    <div class="screenbox">
-        <br>
-        <br>
+    <div class="screenbox"  style="height: 400px;">
 
+        
         <form class="form" method="post">
+
+            <h3>
+                <lord-icon
+                    src="https://cdn.lordicon.com/gqzfzudq.json"
+                    trigger="loop"
+                    colors="primary:#121331,secondary:#16ccec"
+                    style="width:60px;height:60px">
+                </lord-icon>
+                <br>
+                CREATE EVENT
+            </h3>
+
             <div class="question">
-                <input type="text" placeholder="Enter Event Name" style="font-size:35px" name="eventName" class="centreButton"><br><br>
+                <input type="text" name="eventName" required/>
+                <label>Enter Event Name</label>
             </div>
+        
 
             <label class="labelLogin">Template: </label>
             <select name="template">
@@ -47,7 +62,7 @@
                 <input type="text" placeholder="Hour" name="hour" style="font-size:35px"><br><br>
                 <input type="text" placeholder="Minute" name="minute" style="font-size:35px"><br><br>
             </div>
-            <input type="submit" value="Submit" class="button"><br>
+            <input type="submit" value="SUBMIT" class="button"><br>
         </form>
         <!-- https://www.tutorialspoint.com/how-can-i-show-a-hidden-div-when-a-select-option-is-selected-in-javascript#:~:text=To%20show%20a%20hidden%20div,display%E2%80%9D%20to%20block. -->
         <script src="{{ url_for('static', filename='js/intervalOption.js') }}"></script>
