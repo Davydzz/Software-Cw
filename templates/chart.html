@@ -3,7 +3,10 @@
 
 <head>
   <title>Deliver Feedback</title>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:wght@200&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/main.css" type="text/css">
   <link rel="stylesheet" href="{{ url_for('static',filename='styles/main.css') }}" type="text/css" />
+  <script src="https://cdn.lordicon.com/libs/frhvbuzj/lord-icon-2.0.2.js"></script>
 
   <!-- Font Awesome Icon Library -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
@@ -11,9 +14,25 @@
 </head>
 
 <body>
+
+  <div class="box header"><h2>Feedback System</h2></div>
   <!-- Pie charts displayed here -->
-  <div class="screenbox">
-    <h1>{{g.room_code}}</h1>
+  <div class="screenbox" style="width: 600px; height:650px;">
+    <h3 style="text-align: center;">
+    
+    <lord-icon
+        src="https://cdn.lordicon.com/gqdnbnwt.json"
+        trigger="loop"
+        colors="primary:#121331,secondary:#16ccec"
+        style="width:60px;height:60px">
+    </lord-icon>
+    <br>
+    CHARTS FOR
+    <br>
+    {{g.room_code}}
+    
+    </h3>
+    
 
     <div style="width: 600px; display: table-cell;" id="averageMood"> Left </div>
     <div style="display: table-cell;" id="averageRating"> Right </div>
@@ -38,7 +57,7 @@
         <input type="text" id="hour" name="hour" value=""><br>
         <label for="minute">minutes:</label><br>
         <input type="text" id="minute" name="minute" value=""><br><br>
-        <input type="submit" value="Submit">
+        <input type="submit" value="SUBMIT" class="button">
       </form>
 
     </div>
