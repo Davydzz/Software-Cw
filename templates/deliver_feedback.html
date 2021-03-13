@@ -9,10 +9,6 @@
         <script src="{{ url_for('static', filename='js/feedbackForm.js') }}"></script>
     </head>
 
-
-    <!-- https://stackoverflow.com/questions/17001961/how-to-add-drop-down-list-select-programmatically star rating drop down 28/02/2021 -->
-    <!-- https://stackoverflow.com/questions/15164655/generate-html-table-from-2d-javascript-array -->
-    <!-- https://stackoverflow.com/questions/61472018/how-do-i-convert-pythonflask-list-of-objects-to-js-list-of-objects -->
     <body>
         <div class="box header"><h2>Feedback System</h2></div>
         <br>
@@ -46,15 +42,6 @@
                 <br>
 
                 <label>Anonymous</label> 
-
-                <!-- <div class="custom-select">
-                    <select name="anonymous">
-                        <option value="False"> -- Select an Option -- </option>
-                        <option value="True">Star Rating</option>
-                    </select>
-                </div> -->
-
-
                 <select name="anonymous">
                     <option value="False">Feedback is NOT Anonymous</option>
                     <option value="True">Feedback is Anonymous</option>
@@ -66,6 +53,12 @@
             <script>
                 var entries = JSON.parse('{{ g.jdump|safe }}');
                 createTable(entries);
+            </script>
+            <script>
+                var feedbackresult = '{{ g.feedbackresult }}';
+                if (feedbackresult != "") {
+                    alert(feedbackresult);
+                }
             </script>
         </div>
     </body>

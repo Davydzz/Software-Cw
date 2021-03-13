@@ -11,6 +11,10 @@ body, html {
     width: 100%;
 }
 
+.checked {
+  color: orange;
+}
+
 .box > h2 {
     padding-left: 30px;
     margin: 0px;
