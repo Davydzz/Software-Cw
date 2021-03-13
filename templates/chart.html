@@ -7,6 +7,8 @@
       href="{{ url_for('static',filename='styles/main.css') }}"
       type="text/css"
     />
+    <script src="https://cdn.lordicon.com/libs/frhvbuzj/lord-icon-2.0.2.js"></script>
+
     <link rel="stylesheet" href="../css/main.css" type="text/css">
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:wght@200&display=swap" rel="stylesheet">
     <!-- Font Awesome Icon Library -->
@@ -32,7 +34,17 @@
 
        <!-- Pie charts displayed here -->
     <div class="screenbox" style="height: 600px;">
-              <h1>{{g.room_code}}</h1>
+
+              <h3 style="text-align: center;">
+              <lord-icon
+              src="https://cdn.lordicon.com/gqdnbnwt.json"
+              trigger="loop"
+              colors="primary:#121331,secondary:#16ccec"
+              style="width:60px;height:60px">
+          </lord-icon>
+          <br>
+          {{g.room_code}}
+</h3>
             
               <div style="width: 600px; display: table-cell;" id="averageMood"> Left </div>
               <div style="display: table-cell;" id="averageRating"> Right </div>
