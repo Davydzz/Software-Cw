@@ -42,8 +42,7 @@ def main():
 
     feedback_form = """CREATE TABLE FeedbackForm (
                                     feedbackFormID INTEGER PRIMARY KEY AUTOINCREMENT,
-                                    templateName text,
-                                    overallSentiment int
+                                    templateName text
                                 );"""
 
     event_membersTable = """CREATE TABLE event_members(
