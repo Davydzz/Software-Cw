@@ -68,14 +68,14 @@ class DBConnection:
             cur = conn.cursor()
             checkIfAddedBefore= ("SELECT feedbackID FROM feedback WHERE userID = ? AND roomcode = ?;")
             insertStatement =  ("INSERT INTO feedbackQuestions (questionID, feedbackID, answer) VALUES (?, ?, ?);" )
-            updateAnswer = ("UPDATE feedbackQuestions SET answer = ? WHERE feedbackID = ?;")
+            updateAnswer = ("UPDATE feedbackQuestions SET answer = ? WHERE feedbackID = ? AND questionID = ?;")
             #check if the user has submitted feedback for this event already
             cur.execute(checkIfAddedBefore, (user,room))
             possibleBefore = cur.fetchall()
             #if the user has submitted at least one feedback for the event already
             if len(possibleBefore) > 1:
                 #update their feedback in the database
-                conn.execute(updateAnswer, (answer, possibleBefore[0][0]))
+                conn.execute(updateAnswer, (answer, possibleBefore[0][0], questionID))
             else:
                 #add their feedback to the database
                 conn.execute(insertStatement, (questionID, feedbackID, answer))
@@ -207,11 +207,11 @@ class DBConnection:
     def addTemplate(self, result, templateName):
         #create connection to database
         conn = self.createConnection(self.database)
-        addFeedbackForm = ("""INSERT INTO FeedbackForm(templateName, overallSentiment) VALUES (?,?);""")
+        addFeedbackForm = ("""INSERT INTO FeedbackForm(templateName) VALUES (?);""")
         addQuestion = ("INSERT INTO Question(questionNumber, type, content, feedbackFormID) VALUES (?,?,?,?);")
 
         #add template feedback form to database
-        conn.execute(addFeedbackForm, (templateName, 0))
+        conn.execute(addFeedbackForm, (templateName,))
         id = conn.execute('select last_insert_rowID();')
         id = id.fetchone()
         feedbackID = id[0]
@@ -300,7 +300,7 @@ class DBConnection:
 
         return questionAns
     
-    #get sentiment score of feedback for questions of a given event along with the time that the feedback was submited
+   #get sentiment score of feedback for questions of a given event along with the time that the feedback was submited
     def getAnswersDate(self, roomCode):
         #create connection to database
         conn = self.createConnection(self.database)
